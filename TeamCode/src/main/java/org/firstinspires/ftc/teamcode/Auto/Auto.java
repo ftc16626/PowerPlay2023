@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.first
+import org.firstinspires.ftc.teamcode.teleop.teleop;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -13,7 +13,6 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
 
 
 @Autonomous (name="Autonomous")
@@ -41,7 +40,6 @@ public class Auto extends LinearOpMode {
 
     //arm variables
     int armPos;
-
 
 
     @Override
@@ -83,9 +81,10 @@ public class Auto extends LinearOpMode {
         boolean signal3 = detector.getAvgBlue() > detector.getAvgRed() + 10 && detector.getAvgBlue() > detector.getAvgGreen() + 10;
         boolean signal2 = false;
 
-        if(signal1 = false && signal3 = false){
+        /*if (signal1 = false && signal3 = false) {
             signal2 = true;
         }
+         */
 
         FrontLeft = hardwareMap.dcMotor.get("FrontLeft");
         BackLeft = hardwareMap.dcMotor.get("BackLeft");
@@ -111,7 +110,7 @@ public class Auto extends LinearOpMode {
         BackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // robot.FrontLeft.setTargetPosition(1000);
-        //    robot.BackRight.setTargetPosition(-1000);
+        // robot.BackRight.setTargetPosition(-1000);
 
         FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         BackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -139,20 +138,19 @@ public class Auto extends LinearOpMode {
 
         waitForStart();
 
-        if(signal1){
+        if (detector.getAvgRed() > detector.getAvgBlue() + 10 && detector.getAvgRed() > detector.getAvgGreen() + 10) {
             drive(-900, 900, 0.5, 0, 0);
             drive(800, 800, 0.5, 0, 0);
             drive(830, -830, 0.5, 0, 0);
             drive(1400, 1400, 0.5, 0, 0);
         }
-        if(signal2){
-            drive(500, 500, 0.5, 0, 0);
-
-        }
-        if(signal3){
+        if (detector.getAvgBlue() > detector.getAvgRed() + 10 && detector.getAvgBlue() > detector.getAvgGreen() + 10) {
             drive(400, 400, 0.5, 0, 0);
             drive(700, -700, 0.5, 0, 0);
             drive(1050, 1050, 0.5, 0, 0);
+        }
+        else {
+            drive(900, 900, 0.5, 0, 0);
         }
         //lift.liftServo.setPosition(liftPos);
         //lift.bucketServo.setPosition(bucketPos);
@@ -161,10 +159,9 @@ public class Auto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
-
     }
 
-    private void drive(int leftTarget, int rightTarget, double speed, int armTarget, int liftTarget){
+    private void drive(int leftTarget, int rightTarget, double speed, int armTarget, int liftTarget) {
         leftPos += leftTarget;
         rightPos += rightTarget;
         armPos += armTarget;
@@ -177,8 +174,6 @@ public class Auto extends LinearOpMode {
         arm.setTargetPosition(armPos);
         liftMotor1.setTargetPosition(liftPos);
         liftMotor2.setTargetPosition(liftPos);
-
-
 
 
         FrontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -199,4 +194,6 @@ public class Auto extends LinearOpMode {
         liftMotor1.setPower(speed);
         liftMotor2.setPower(speed);
         sleep(1000);
+    }
 }
+
