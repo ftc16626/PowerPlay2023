@@ -6,6 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.teleop.teleop;
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -13,6 +15,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 
 @Autonomous (name="Autonomous")
@@ -44,6 +47,23 @@ public class Auto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+        // TRAJECTORIES
+
+        Trajectory traj1 = drive.trajectoryBuilder(new Pose2d(-39.0, -63.0, Math.toRadians(180.0)))
+                .strafeLeft(10.0)
+                .build();
+
+        Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
+                .forward(2.6)
+                .build();
+
+        Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
+                .strafeRight(10.0)
+                .build();
+
         final int width = 320;
         final int height = 240;
         boolean test = false;
@@ -86,46 +106,6 @@ public class Auto extends LinearOpMode {
         }
          */
 
-        FrontLeft = hardwareMap.dcMotor.get("FrontLeft");
-        BackLeft = hardwareMap.dcMotor.get("BackLeft");
-        FrontRight = hardwareMap.dcMotor.get("FrontRight");
-        BackRight = hardwareMap.dcMotor.get("BackRight");
-
-        claw = hardwareMap.servo.get("claw");
-        colorSensor = hardwareMap.get(ColorSensor.class, "ColorSensor");
-        arm = hardwareMap.dcMotor.get("arm");
-        liftMotor1 = hardwareMap.dcMotor.get("liftMotor1");
-        liftMotor2 = hardwareMap.dcMotor.get("liftMotor2");
-
-        FrontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        FrontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BackRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        arm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        liftMotor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        liftMotor2.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-        FrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        BackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        // robot.FrontLeft.setTargetPosition(1000);
-        // robot.BackRight.setTargetPosition(-1000);
-
-        FrontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BackRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BackLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        FrontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        FrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        BackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        arm.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        liftMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        liftMotor1.setDirection(DcMotorSimple.Direction.REVERSE);
-
         int leftPos = 0;
         int rightPos = 0;
 
@@ -139,14 +119,11 @@ public class Auto extends LinearOpMode {
         waitForStart();
 
         if (detector.getAvgRed() > detector.getAvgBlue() + 10 && detector.getAvgRed() > detector.getAvgGreen() + 10) {
-            drive(-900, 900, 0.5, 0, 0);
-            drive(800, 800, 0.5, 0, 0);
-            drive(830, -830, 0.5, 0, 0);
-            drive(1400, 1400, 0.5, 0, 0);
+            drive.followTrajectory(traj1);
+            drive.followTrajectory(traj2);
         }
         if (detector.getAvgBlue() > detector.getAvgRed() + 10 && detector.getAvgBlue() > detector.getAvgGreen() + 10) {
-            drive(400, 400, 0.5, 0, 0);
-            drive(700, -700, 0.5, 0, 0);
+            drive.followTrajectory(traj3);
             drive(1050, 1050, 0.5, 0, 0);
         }
         else {
