@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 @TeleOp (name = "RobotCentricSample")
 public class RobotCentricSample extends LinearOpMode{
@@ -17,6 +18,7 @@ public class RobotCentricSample extends LinearOpMode{
     public DcMotor liftMotor1;
     public DcMotor liftMotor2;
     public Servo claw;
+    public DigitalChannel limit1;
     //public IMU imu;
 
     public final double liftPower = 1.0;
@@ -25,7 +27,7 @@ public class RobotCentricSample extends LinearOpMode{
     public final int armPickupPosBack = -70;
     public final int armPickupPosFront = -3150;
 
-
+    DigitalChannel digitalTouch;  // Hardware Device Object
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -40,6 +42,12 @@ public class RobotCentricSample extends LinearOpMode{
         claw = hardwareMap.servo.get("claw");
         liftMotor1 = hardwareMap.dcMotor.get("liftMotor1");
         liftMotor2 = hardwareMap.dcMotor.get("liftMotor2");
+
+        // get a reference to our digitalTouch object.
+        digitalTouch = hardwareMap.get(DigitalChannel.class, "sensor_digital");
+
+        // set the digital channel to input.
+        digitalTouch.setMode(DigitalChannel.Mode.INPUT);
         //imu = hardwareMap.IMU.get("imu");
 
 
@@ -66,6 +74,15 @@ public class RobotCentricSample extends LinearOpMode{
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
+
+            if (digitalTouch.getState() == true) {
+                telemetry.addData("Digital Touch", "Is Not Pressed");
+            } else {
+                telemetry.addData("Digital Touch", "Is Pressed");
+            }
+
+            telemetry.update();
+
             double y = -gamepad1.left_stick_y; // Remember, this is reversed!
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
