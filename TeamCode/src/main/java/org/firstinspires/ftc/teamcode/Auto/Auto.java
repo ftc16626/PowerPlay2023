@@ -91,12 +91,16 @@ public class Auto extends LinearOpMode {
         // TRAJECTORIES
         // gobilda motor 131 encoder ticks per block strafing in inches
 
-        Trajectory traj1 = drive.trajectoryBuilder(new Pose2d(-39.0, -63.0, Math.toRadians(180.0)))
-                .strafeLeft(3.0)
+        Trajectory traj0 = drive.trajectoryBuilder(new Pose2d(-39.0, -63.0, Math.toRadians(180.0)))
+                .forward(.05)
+                .build();
+
+        Trajectory traj1 = drive.trajectoryBuilder(traj0.end())
+                .strafeLeft(3.4)
                 .build();
 
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .forward(4.5)
+                .forward(5.4)
                 .build();
 
         /*Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
@@ -104,22 +108,29 @@ public class Auto extends LinearOpMode {
                 .build();
                 */
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineToLinearHeading(new Pose2d(50, 18, Math.toRadians(150)))
+                .strafeRight(3.4)
                 .build();
 
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineToLinearHeading(new Pose2d(-50, -18, Math.toRadians(150)))
+                .back(3.4)
                 .build();
 
-        Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
+
+        /*Trajectory traj5 = drive.trajectoryBuilder(traj3.end())
                 .lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(-60)))
-                .strafeLeft(2.0)
                 .build();
 
         Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
-                .lineToLinearHeading(new Pose2d(-25, 18, Math.toRadians(150)))
-                // .back(3.0)
+                .strafeLeft(2.0)
                 .build();
+
+        Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
+                .back(3.0)
+                .build();
+
+*/
+
+
 
         final int width = 320;
         final int height = 240;
@@ -180,23 +191,39 @@ public class Auto extends LinearOpMode {
 
         //RED
         if (detector.getAvgRed() > detector.getAvgBlue() && detector.getAvgRed() > detector.getAvgGreen()) {
+            drive.followTrajectory(traj0);
             drive.followTrajectory(traj1);
             drive.followTrajectory(traj2);
             drive.followTrajectory(traj3);
-            drive(0,0, 0.5, 0, 500);
-            drive(0,0,0.5,1, 0);
+            drive(0,0, 0.5, -1200, 0);
+            sleep(1000);
+            //drive(0,0, 0.5, 0, 700);
+            //sleep(1000);
+            //drive(40, -40, 0.5, 0, 0);
+            /*claw.setPosition(1);
+            sleep(1000);
+            drive(40, -40, 0.5, 0, 0);
+            sleep(1000);
+            drive(0, 0, 0.5, 1200, -700);
+            drive.followTrajectory(traj1);
             drive.followTrajectory(traj4);
-            drive(0, 0, 0.5, 0, -500);
+
+             */
+
+
+
+
         }
 
         //BLUE
-        if (detector.getAvgBlue() > detector.getAvgRed() + 25 && detector.getAvgBlue() > detector.getAvgGreen()) {
+        /*if (detector.getAvgBlue() > detector.getAvgRed() && detector.getAvgBlue() > detector.getAvgGreen()) {
             drive.followTrajectory(traj1);
             drive.followTrajectory(traj2);
             drive.followTrajectory(traj3);
             drive(0,0, 0.5, 0, 500);
             drive(0,0,0.5,1, 0);
             drive.followTrajectory(traj5);
+            drive.followTrajectory(traj6);
             drive(0, 0, 0.5, 0, -500);
         }
 
@@ -205,12 +232,13 @@ public class Auto extends LinearOpMode {
         else {
             drive.followTrajectory(traj1);
             drive.followTrajectory(traj2);
-            drive.followTrajectory(traj6);
+            drive.followTrajectory(traj7);
             drive(0,0, 0.5, 0, 500);
             drive(0,0,0.5,1, 0);
-            drive.followTrajectory(traj4);
             drive(0, 0, 0.5, 0, -500);
         }
+
+         */
 
 
 
@@ -249,14 +277,15 @@ public class Auto extends LinearOpMode {
         liftMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        leftFront.setPower(speed*.2);
-        leftBack.setPower(speed*.2);
-        rightFront.setPower(speed*.2);
-        rightBack.setPower(speed*.2);
+        leftFront.setPower(speed);
+        leftBack.setPower(speed);
+        rightFront.setPower(speed);
+        rightBack.setPower(speed);
         arm.setPower(speed);
         liftMotor1.setPower(speed);
         liftMotor2.setPower(speed);
-        sleep(1000);
-    }
+        while(opModeIsActive() && leftFront.isBusy() && rightFront.isBusy() && leftBack.isBusy() && rightBack.isBusy()){
+            idle();
+        }    }
 }
 
