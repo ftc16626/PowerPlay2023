@@ -195,7 +195,7 @@ public class Auto extends LinearOpMode {
             drive.followTrajectory(traj1);
             drive.followTrajectory(traj2);
             drive.followTrajectory(traj3);
-            drive(0,0, 0.5, -1200, 0);
+            //drive(0,0, 0.5, -1200, 0);
             sleep(1000);
             //drive(0,0, 0.5, 0, 700);
             //sleep(1000);
@@ -286,6 +286,7 @@ public class Auto extends LinearOpMode {
         liftMotor2.setPower(speed);
         while(opModeIsActive() && leftFront.isBusy() && rightFront.isBusy() && leftBack.isBusy() && rightBack.isBusy()){
             idle();
-        }    }
+        }
+    }
 }
 
