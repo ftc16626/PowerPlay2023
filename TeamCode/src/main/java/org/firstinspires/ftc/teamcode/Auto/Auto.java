@@ -1,11 +1,21 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
 
+import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
+
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
+import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
+import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.teleop.teleop;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -17,6 +27,11 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
+
+import java.util.Arrays;
 
 
 @Autonomous (name="Autonomous")
@@ -91,12 +106,14 @@ public class Auto extends LinearOpMode {
         // TRAJECTORIES
         // gobilda motor 131 encoder ticks per block strafing in inches
 
+
+
         Trajectory traj0 = drive.trajectoryBuilder(new Pose2d(-39.0, -63.0, Math.toRadians(180.0)))
                 .forward(.05)
                 .build();
 
         Trajectory traj1 = drive.trajectoryBuilder(traj0.end())
-                .strafeLeft(3.4)
+                .strafeLeft(3.0)
                 .build();
 
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
@@ -108,13 +125,12 @@ public class Auto extends LinearOpMode {
                 .build();
                 */
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .strafeRight(3.4)
+                .strafeRight(3.2)
                 .build();
 
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
                 .back(3.4)
                 .build();
-
 
         /*Trajectory traj5 = drive.trajectoryBuilder(traj3.end())
                 .lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(-60)))
@@ -161,19 +177,6 @@ public class Auto extends LinearOpMode {
             telemetry.update();
         }
 
-        /*signal 1 = red
-        signal 2 = green
-        signal 3 = blue
-        */
-        boolean signal1 = detector.getAvgRed() > detector.getAvgBlue() + 10 && detector.getAvgRed() > detector.getAvgGreen() + 10;
-        boolean signal3 = detector.getAvgBlue() > detector.getAvgRed() + 10 && detector.getAvgBlue() > detector.getAvgGreen() + 10;
-        boolean signal2 = false;
-
-        /*if (signal1 = false && signal3 = false) {
-            signal2 = true;
-        }
-         */
-
         int leftPos = 0;
         int rightPos = 0;
 
@@ -195,7 +198,8 @@ public class Auto extends LinearOpMode {
             drive.followTrajectory(traj1);
             drive.followTrajectory(traj2);
             drive.followTrajectory(traj3);
-            //drive(0,0, 0.5, -1200, 0);
+            drive(0.5, -1200, 0);
+            drive.turn(Math.toRadians(-60));
             sleep(1000);
             //drive(0,0, 0.5, 0, 700);
             //sleep(1000);
@@ -252,38 +256,47 @@ public class Auto extends LinearOpMode {
 
     }
 
-    private void drive(int leftTarget, int rightTarget, double speed, int armTarget, int liftTarget) {
-        leftPos += leftTarget;
-        rightPos += rightTarget;
+
+    //private void drive(int leftTarget, int rightTarget, double speed, int armTarget, int liftTarget){
+    private void drive(double speed, int armTarget, int liftTarget){
+
+        //leftPos += leftTarget;
+        //rightPos += rightTarget;
         armPos += armTarget;
         liftPos += liftTarget;
 
-        leftFront.setTargetPosition(leftPos);
+        /*leftFront.setTargetPosition(leftPos);
         leftBack.setTargetPosition(leftPos);
         rightFront.setTargetPosition(rightPos);
         rightBack.setTargetPosition(rightPos);
+         */
         arm.setTargetPosition(armPos);
         liftMotor1.setTargetPosition(liftPos);
         liftMotor2.setTargetPosition(liftPos);
 
 
-        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+
+        /*leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+         */
         arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         //lift motors
         liftMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        leftFront.setPower(speed);
+        /*leftFront.setPower(speed);
         leftBack.setPower(speed);
         rightFront.setPower(speed);
         rightBack.setPower(speed);
+         */
         arm.setPower(speed);
         liftMotor1.setPower(speed);
         liftMotor2.setPower(speed);
+
         while(opModeIsActive() && leftFront.isBusy() && rightFront.isBusy() && leftBack.isBusy() && rightBack.isBusy()){
             idle();
         }
