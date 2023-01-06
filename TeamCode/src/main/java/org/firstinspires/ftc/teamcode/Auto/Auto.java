@@ -1,16 +1,6 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
 
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
-
-import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
-import com.acmerobotics.roadrunner.trajectory.constraints.AngularVelocityConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.MecanumVelocityConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
-import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
@@ -27,6 +17,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.teleop.RobotCentricSample;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -109,15 +100,15 @@ public class Auto extends LinearOpMode {
 
 
         Trajectory traj0 = drive.trajectoryBuilder(new Pose2d(-39.0, -63.0, Math.toRadians(180.0)))
-                .forward(.05)
+                .forward(5)
                 .build();
 
         Trajectory traj1 = drive.trajectoryBuilder(traj0.end())
-                .strafeLeft(3.0)
+                .strafeLeft(34)
                 .build();
 
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .forward(5.4)
+                .forward(43)
                 .build();
 
         /*Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
@@ -125,26 +116,29 @@ public class Auto extends LinearOpMode {
                 .build();
                 */
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .strafeRight(3.2)
-                .build();
-
-        Trajectory traj4 = drive.trajectoryBuilder(traj3.end())
-                .back(3.4)
+                .strafeRight(35)
                 .build();
 
         /*Trajectory traj5 = drive.trajectoryBuilder(traj3.end())
-                .lineToLinearHeading(new Pose2d(0, 0, Math.toRadians(-60)))
+                .strafeRight(0)
+                .addDisplacementMarker(() -> {
+                    // This marker runs after the first splineTo()
+                    move(0.5, -1200, 700);
+                    // Run your action in here!
+                })
                 .build();
 
-        Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
-                .strafeLeft(2.0)
+         */
+
+
+        Trajectory traj4 = drive.trajectoryBuilder(traj3.end().plus(new Pose2d(0, 0, Math.toRadians(-70))))
+                .forward(10)
                 .build();
 
-        Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
-                .back(3.0)
-                .build();
 
-*/
+
+
+
 
 
 
@@ -184,7 +178,7 @@ public class Auto extends LinearOpMode {
 
         int liftPos = 0;
 
-
+        claw.setPosition(0);
         //claw.setPosition(0);
 
         waitForStart();
@@ -192,15 +186,22 @@ public class Auto extends LinearOpMode {
 
         if (isStopRequested()) return;
 
+
         //RED
         if (detector.getAvgRed() > detector.getAvgBlue() && detector.getAvgRed() > detector.getAvgGreen()) {
             drive.followTrajectory(traj0);
+            move(0.5, -100, 0);
             drive.followTrajectory(traj1);
             drive.followTrajectory(traj2);
             drive.followTrajectory(traj3);
-            drive(0.5, -1200, 0);
             drive.turn(Math.toRadians(-60));
+            //drive.followTrajectory(traj5);
+            //drive(0.5, -1200, 700);
+            move(0.5, -1200, 900);
             sleep(1000);
+            //move arms and lift
+            drive.followTrajectory(traj4);
+            claw.setPosition(0.3);
             //drive(0,0, 0.5, 0, 700);
             //sleep(1000);
             //drive(40, -40, 0.5, 0, 0);
@@ -258,7 +259,7 @@ public class Auto extends LinearOpMode {
 
 
     //private void drive(int leftTarget, int rightTarget, double speed, int armTarget, int liftTarget){
-    private void drive(double speed, int armTarget, int liftTarget){
+    private void move(double speed, int armTarget, int liftTarget){
 
         //leftPos += leftTarget;
         //rightPos += rightTarget;
@@ -296,10 +297,6 @@ public class Auto extends LinearOpMode {
         arm.setPower(speed);
         liftMotor1.setPower(speed);
         liftMotor2.setPower(speed);
-
-        while(opModeIsActive() && leftFront.isBusy() && rightFront.isBusy() && leftBack.isBusy() && rightBack.isBusy()){
-            idle();
-        }
     }
 }
 
