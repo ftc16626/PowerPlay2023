@@ -33,7 +33,7 @@ public class SignalReader extends OpenCvPipeline {
     /*
      * The core values which define the location and size of the sample regions
      */
-    static final Point REGION_TOPLEFT_ANCHOR_POINT = new Point(125,190);
+    static final Point REGION_TOPLEFT_ANCHOR_POINT = new Point(230,90);
     static final int REGION_WIDTH = 50;
     static final int REGION_HEIGHT = 50;
 

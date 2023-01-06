@@ -25,9 +25,9 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunne
 import java.util.Arrays;
 
 
-@Autonomous (name="Autonomous")
+@Autonomous (name="rightAuto")
 
-public class Auto extends LinearOpMode {
+public class rightAuto extends LinearOpMode {
 
     // position variables
     private int liftPos;
@@ -53,7 +53,7 @@ public class Auto extends LinearOpMode {
     //arm variable
     int armPos;
 
-
+// NOTE that everything is reversed in this code, so when I say goes left or goes right its actually opposite because its on the other side of the field. Auto1 starts on the left side of field
     @Override
     public void runOpMode() {
         //get motors from the hardware map (in the quotations are what the hardware objects are called in the configurations part of the driver station)
@@ -110,7 +110,7 @@ public class Auto extends LinearOpMode {
                 .build();
 
         Trajectory traj1 = drive.trajectoryBuilder(traj0.end())
-                .strafeLeft(34)
+                .strafeRight(34)
                 .build();
 
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
@@ -118,7 +118,7 @@ public class Auto extends LinearOpMode {
                 .build();
 
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .strafeRight(35)
+                .strafeLeft(35)
                 .build();
 
         /*Trajectory traj5 = drive.trajectoryBuilder(traj3.end())
@@ -133,11 +133,11 @@ public class Auto extends LinearOpMode {
 
 
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end().plus(new Pose2d(0, 0, Math.toRadians(-70))))
-                .forward(8)
+                .forward(12)
                 .build();
 
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .back(10)
+                .back(12)
                 .build();
 
         Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
@@ -150,39 +150,39 @@ public class Auto extends LinearOpMode {
 
 
         Trajectory traj8 = drive.trajectoryBuilder(traj7.end())
-                .forward(10)
+                .forward(12)
                 .build();
 
         Trajectory traj9 = drive.trajectoryBuilder(traj8.end())
-                .back(10)
+                .back(12)
                 .build();
 
 
         // Red
 
         Trajectory traj10 = drive.trajectoryBuilder(traj9.end())
-                .forward(26)
+                .strafeLeft(30)
                 .build();
         Trajectory traj11 = drive.trajectoryBuilder(traj10.end())
-                .strafeLeft(20)
-                .build();
-
-
-         // Green
-
-         Trajectory traj12 = drive.trajectoryBuilder(traj11.end())
                 .back(14)
                 .build();
 
-         // Blue
 
-         Trajectory traj13 = drive.trajectoryBuilder(traj11.end())
-            .strafeRight(30)
-            .build();
+        // Green
 
-         Trajectory traj14 = drive.trajectoryBuilder(traj11.end())
-            .back(14)
-            .build();
+        Trajectory traj12 = drive.trajectoryBuilder(traj11.end())
+                .back(14)
+                .build();
+
+        // Blue
+
+        Trajectory traj13 = drive.trajectoryBuilder(traj11.end())
+                .strafeRight(33.5)
+                .build();
+
+        Trajectory traj14 = drive.trajectoryBuilder(traj11.end())
+                .back(14)
+                .build();
 
 
 
@@ -243,7 +243,7 @@ public class Auto extends LinearOpMode {
             drive.followTrajectory(traj1);
             drive.followTrajectory(traj2);
             drive.followTrajectory(traj3);
-            drive.turn(Math.toRadians(-59));
+            drive.turn(Math.toRadians(59));
             move(0.5, -1000, 800); // -1200 900 lift before and worked
             sleep(500);
             //move arms and lift
@@ -260,7 +260,7 @@ public class Auto extends LinearOpMode {
             //lift goes down
             move(0.5, 300, -750);
             //turn
-            drive.turn(Math.toRadians(202)); //200
+            drive.turn(Math.toRadians(-220)); //200
 
 
             //drops lift and arm
@@ -279,7 +279,7 @@ public class Auto extends LinearOpMode {
             move(0.5, 0, 1200);
             sleep(350);
             //turns right
-            drive.turn(Math.toRadians(-182));
+            drive.turn(Math.toRadians(196.5));
             //moves forward
             drive.followTrajectory(traj8);
             //release cone
@@ -287,11 +287,10 @@ public class Auto extends LinearOpMode {
             //moves back
             drive.followTrajectory(traj9);
             //turns
-            drive.turn(Math.toRadians(184));
+            drive.turn(Math.toRadians(-60));
             claw.setPosition(0);
             move(0.5, 1000, -1200);
-            sleep(350);
-            //RED PORTION
+            // Blue Park
             drive.followTrajectory(traj10);
             drive.followTrajectory(traj11);
 
@@ -308,7 +307,7 @@ public class Auto extends LinearOpMode {
             drive.followTrajectory(traj1);
             drive.followTrajectory(traj2);
             drive.followTrajectory(traj3);
-            drive.turn(Math.toRadians(-59));
+            drive.turn(Math.toRadians(59));
             move(0.5, -1000, 800); // -1200 900 lift before and worked
             sleep(500);
             //move arms and lift
@@ -325,7 +324,7 @@ public class Auto extends LinearOpMode {
             //lift goes down
             move(0.5, 300, -750);
             //turn
-            drive.turn(Math.toRadians(202)); //200
+            drive.turn(Math.toRadians(-220)); //200
 
 
             //drops lift and arm
@@ -344,7 +343,7 @@ public class Auto extends LinearOpMode {
             move(0.5, 0, 1200);
             sleep(350);
             //turns right
-            drive.turn(Math.toRadians(-182));
+            drive.turn(Math.toRadians(196.5));
             //moves forward
             drive.followTrajectory(traj8);
             //release cone
@@ -352,7 +351,7 @@ public class Auto extends LinearOpMode {
             //moves back
             drive.followTrajectory(traj9);
             //turns
-            drive.turn(Math.toRadians(60));
+            drive.turn(Math.toRadians(-60));
             claw.setPosition(0);
             move(0.5, 1000, -1200);
             // Blue Park
@@ -371,7 +370,7 @@ public class Auto extends LinearOpMode {
             drive.followTrajectory(traj1);
             drive.followTrajectory(traj2);
             drive.followTrajectory(traj3);
-            drive.turn(Math.toRadians(-59));
+            drive.turn(Math.toRadians(59));
             move(0.5, -1000, 800); // -1200 900 lift before and worked
             sleep(500);
             //move arms and lift
@@ -388,7 +387,7 @@ public class Auto extends LinearOpMode {
             //lift goes down
             move(0.5, 300, -750);
             //turn
-            drive.turn(Math.toRadians(202)); //200
+            drive.turn(Math.toRadians(-220)); //200
 
 
             //drops lift and arm
@@ -407,7 +406,7 @@ public class Auto extends LinearOpMode {
             move(0.5, 0, 1200);
             sleep(350);
             //turns right
-            drive.turn(Math.toRadians(-182));
+            drive.turn(Math.toRadians(196.5));
             //moves forward
             drive.followTrajectory(traj8);
             //release cone
@@ -415,11 +414,13 @@ public class Auto extends LinearOpMode {
             //moves back
             drive.followTrajectory(traj9);
             //turns
-            drive.turn(Math.toRadians(60));
+            drive.turn(Math.toRadians(-60));
             claw.setPosition(0);
             move(0.5, 1000, -1200);
-            // Green park
+            // Blue Park
             drive.followTrajectory(traj12);
+
+
         }
 
 
