@@ -76,7 +76,7 @@ public class Auto extends LinearOpMode {
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         // robot.FrontLeft.setTargetPosition(1000);
-        //    robot.BackRight.setTargetPosition(-1000);
+        //  robot.BackRight.setTargetPosition(-1000);
 
         leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -94,9 +94,10 @@ public class Auto extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        // TRAJECTORIES
-        // gobilda motor 131 encoder ticks per block strafing in inches
 
+
+        /* The generation of the trajectories start here. You can name them whatever you want, but for
+        this autonomous I made trajectories from 0 on. */
 
 
         Trajectory traj0 = drive.trajectoryBuilder(new Pose2d(-39.0, -63.0, Math.toRadians(180.0)))
@@ -111,10 +112,6 @@ public class Auto extends LinearOpMode {
                 .forward(43)
                 .build();
 
-        /*Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .strafeRight(6.0)
-                .build();
-                */
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
                 .strafeRight(35)
                 .build();
@@ -127,7 +124,6 @@ public class Auto extends LinearOpMode {
                     // Run your action in here!
                 })
                 .build();
-
          */
 
 
@@ -135,18 +131,20 @@ public class Auto extends LinearOpMode {
                 .forward(10)
                 .build();
 
+        //everything after this is not part of the origin
 
+        Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
+                .back(10)
+                .build();
 
-
-
-
-
+       
 
         final int width = 320;
         final int height = 240;
         boolean test = false;
 
 
+        // This has to do with the computer vision. The other file in this package called SignalReader is the camera configuration portion
         SignalReader detector = new SignalReader(width);
         OpenCvCamera camera;
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -164,6 +162,7 @@ public class Auto extends LinearOpMode {
         });
         camera.setPipeline(detector);
         //camera.startStreaming(width, height, OpenCvCameraRotation.UPRIGHT);
+        // These statements below show up on the driver station and detect the average amounts of RGB in the frame created in SignalReader
         while (!isStarted()) {
             telemetry.addData("Avg Red in View", detector.getAvgRed());
             telemetry.addData("Avg Green in View", detector.getAvgGreen());
