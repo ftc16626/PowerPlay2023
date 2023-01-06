@@ -32,10 +32,10 @@ public class RobotCentricSample extends LinearOpMode{
 
         // Declare our motors
         // Make sure your ID's match your configuration
-        leftFront = hardwareMap.dcMotor.get("FrontLeft");
-        leftBack = hardwareMap.dcMotor.get("BackLeft");
-        rightFront = hardwareMap.dcMotor.get("FrontRight");
-        rightBack = hardwareMap.dcMotor.get("BackRight");
+        leftFront = hardwareMap.dcMotor.get("leftFront");
+        leftBack = hardwareMap.dcMotor.get("leftBack");
+        rightFront = hardwareMap.dcMotor.get("rightFront");
+        rightBack = hardwareMap.dcMotor.get("rightBack");
         arm = hardwareMap.dcMotor.get("arm");
         claw = hardwareMap.servo.get("claw");
         liftMotor1 = hardwareMap.dcMotor.get("liftMotor1");
