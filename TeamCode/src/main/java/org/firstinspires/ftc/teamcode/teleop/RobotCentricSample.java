@@ -5,20 +5,18 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
 
 @TeleOp (name = "RobotCentricSample")
 public class RobotCentricSample extends LinearOpMode{
 
-    public DcMotor FrontLeft;
-    public DcMotor FrontRight;
-    public DcMotor BackLeft;
-    public DcMotor BackRight;
+    public DcMotor leftFront;
+    public DcMotor rightFront;
+    public DcMotor leftBack;
+    public DcMotor rightBack;
     public DcMotor arm;
     public DcMotor liftMotor1;
     public DcMotor liftMotor2;
     public Servo claw;
-    public DigitalChannel limit1;
     //public IMU imu;
 
     public final double liftPower = 1.0;
@@ -27,27 +25,21 @@ public class RobotCentricSample extends LinearOpMode{
     public final int armPickupPosBack = -70;
     public final int armPickupPosFront = -3150;
 
-    DigitalChannel digitalTouch;  // Hardware Device Object
+
     @Override
     public void runOpMode() throws InterruptedException {
 
 
         // Declare our motors
         // Make sure your ID's match your configuration
-        FrontLeft = hardwareMap.dcMotor.get("FrontLeft");
-        BackLeft = hardwareMap.dcMotor.get("BackLeft");
-        FrontRight = hardwareMap.dcMotor.get("FrontRight");
-        BackRight = hardwareMap.dcMotor.get("BackRight");
+        leftFront = hardwareMap.dcMotor.get("FrontLeft");
+        leftBack = hardwareMap.dcMotor.get("BackLeft");
+        rightFront = hardwareMap.dcMotor.get("FrontRight");
+        rightBack = hardwareMap.dcMotor.get("BackRight");
         arm = hardwareMap.dcMotor.get("arm");
         claw = hardwareMap.servo.get("claw");
         liftMotor1 = hardwareMap.dcMotor.get("liftMotor1");
         liftMotor2 = hardwareMap.dcMotor.get("liftMotor2");
-
-        // get a reference to our digitalTouch object.
-        digitalTouch = hardwareMap.get(DigitalChannel.class, "sensor_digital");
-
-        // set the digital channel to input.
-        digitalTouch.setMode(DigitalChannel.Mode.INPUT);
         //imu = hardwareMap.IMU.get("imu");
 
 
@@ -55,8 +47,8 @@ public class RobotCentricSample extends LinearOpMode{
 
         // Reverse the right side motors
         // Reverse left motors if you are using NeveRests
-        FrontLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        BackLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         arm.setDirection(DcMotorSimple.Direction.REVERSE);
         claw.setPosition(0);
 
@@ -74,15 +66,6 @@ public class RobotCentricSample extends LinearOpMode{
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
-
-            if (digitalTouch.getState() == true) {
-                telemetry.addData("Digital Touch", "Is Not Pressed");
-            } else {
-                telemetry.addData("Digital Touch", "Is Pressed");
-            }
-
-            telemetry.update();
-
             double y = -gamepad1.left_stick_y; // Remember, this is reversed!
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = gamepad1.right_stick_x;
@@ -97,10 +80,10 @@ public class RobotCentricSample extends LinearOpMode{
             else if(gamepad1.right_bumper) dtPowerFactor = -0.3;
             else dtPowerFactor = 1;
 
-            FrontLeft.setPower(frontLeftPower * dtPowerFactor);
-            BackLeft.setPower(backLeftPower * dtPowerFactor);
-            FrontRight.setPower(frontRightPower * dtPowerFactor);
-            BackRight.setPower(backRightPower * dtPowerFactor);
+            leftFront.setPower(frontLeftPower * dtPowerFactor);
+            leftBack.setPower(backLeftPower * dtPowerFactor);
+            rightFront.setPower(frontRightPower * dtPowerFactor);
+            rightBack.setPower(backRightPower * dtPowerFactor);
 
             telemetry.addData("Arm Position", arm.getCurrentPosition());
             telemetry.addData("Lift Position", liftMotor1.getCurrentPosition());
