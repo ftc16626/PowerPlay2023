@@ -128,16 +128,64 @@ public class Auto extends LinearOpMode {
 
 
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end().plus(new Pose2d(0, 0, Math.toRadians(-70))))
-                .forward(10)
+                .forward(8)
                 .build();
-
-        //everything after this is not part of the origin
 
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
                 .back(10)
                 .build();
 
-       
+        Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
+                .forward(25)
+                .build();
+
+        Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
+                .back(30)
+                .build();
+
+
+        Trajectory traj8 = drive.trajectoryBuilder(traj7.end())
+                .forward(10)
+                .build();
+
+        Trajectory traj9 = drive.trajectoryBuilder(traj8.end())
+                .back(10)
+                .build();
+
+        /**everything after this is not part of the origin
+
+
+
+        // Red
+
+        Trajectory traj10 = drive.trajectoryBuilder(traj9.end())
+                .forward(38)
+                .build();
+        Trajectory traj11 = drive.trajectoryBuilder(traj10.end())
+                .strafeLeft(20)
+                .build();
+
+         // Green
+         drive.turn(Math.toRadians(60));
+
+         Trajectory traj12 = drive.trajectoryBuilder(traj11.end())
+                .back(14)
+                .build();
+
+         // Blue
+         drive.turn(Math.toRadians(60));
+
+         Trajectory traj12 = drive.trajectoryBuilder(traj11.end())
+            .strafeRight(30)
+            .build();
+
+         Trajectory traj13 = drive.trajectoryBuilder(traj11.end())
+            .back(14)
+            .build();
+
+         **/
+
+
 
         final int width = 320;
         final int height = 240;
@@ -193,14 +241,81 @@ public class Auto extends LinearOpMode {
             drive.followTrajectory(traj1);
             drive.followTrajectory(traj2);
             drive.followTrajectory(traj3);
-            drive.turn(Math.toRadians(-60));
-            //drive.followTrajectory(traj5);
-            //drive(0.5, -1200, 700);
-            move(0.5, -1200, 900);
+            drive.turn(Math.toRadians(-57));
+            move(0.5, -1000, 800); // -1200 900 lift before and worked
             sleep(1000);
             //move arms and lift
+            //moves forward to pole
             drive.followTrajectory(traj4);
+            move(0.5, 300, 800);
             claw.setPosition(0.3);
+
+            // raises up arm above pole
+            move(0.5, -200, 0);
+            //move back
+            drive.followTrajectory(traj5);
+
+            //lift goes down
+            move(0.5, 300, -750);
+            //turn
+            drive.turn(Math.toRadians(205));
+
+            //drops lift and arm
+            move(0.5, -100, -900);
+            sleep(1000);
+            //moves forward
+            drive.followTrajectory(traj6);
+            //moves into arm
+            move(0.5, 400, 0);
+            claw.setPosition(0);
+            sleep(500);
+            // moves above arm
+            move(0.5, -500, 0);
+            //moves backward
+            drive.followTrajectory(traj7);
+            move(0.5, 0, 900);
+            sleep(1000);
+            //turns right
+            drive.turn(Math.toRadians(-150));
+            //moves forward
+            drive.followTrajectory(traj8);
+            //release cone
+            claw.setPosition(0.3);
+            //moves back
+            drive.followTrajectory(traj9);
+            //turns
+            drive.turn(Math.toRadians(150));
+            claw.setPosition(0);
+            move(0.5, 1000, -900);
+            sleep(1000);
+            //RED PORTION
+            //drive.followTrajectory(traj10);
+            //drive.followTrajectory(traj11);
+
+
+            /**this stuff should be added after test
+             drive.followTrajectory(traj5);
+             drive.turn(Math.toRadians(150));
+             //if an issue arises then add move(0.5, 0, -900);
+             drive.followTrajectory(traj6);
+             move(0.5, 500, 0);
+             claw.setPosition(0);
+             move(0.5, -500, 0);
+             drive.followTrajectory(traj7);
+             move(0.5, 0, 900);
+             sleep(1000);
+             drive.turn(Math.toRadians(-150));
+             drive.followTrajectory(traj8);
+             claw.setPosition(0.3);
+             drive.followTrajectory(traj9);
+             drive.turn(Math.toRadians(150));
+             move(0.5, 0, 0);
+             sleep(1000);
+             //RED PORTION
+             drive.followTrajectory(traj10);
+             drive.followTrajectory(traj11);
+
+            **/
             //drive(0,0, 0.5, 0, 700);
             //sleep(1000);
             //drive(40, -40, 0.5, 0, 0);
