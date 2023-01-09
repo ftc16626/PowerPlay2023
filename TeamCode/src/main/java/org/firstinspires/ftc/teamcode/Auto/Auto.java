@@ -114,7 +114,7 @@ public class Auto extends LinearOpMode {
                 .build();
 
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .forward(43)
+                .forward(40) //45
                 .build();
 
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
@@ -133,24 +133,24 @@ public class Auto extends LinearOpMode {
 
 
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end().plus(new Pose2d(0, 0, Math.toRadians(-70))))
-                .forward(8)
+                .forward(4.8)
                 .build();
 
         Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
-                .back(10)
+                .back(7.9)
                 .build();
 
         Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
-                .forward(24)
+                .forward(22.4)
                 .build();
 
         Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
-                .back(30)
+                .back(27)
                 .build();
 
 
         Trajectory traj8 = drive.trajectoryBuilder(traj7.end())
-                .forward(10)
+                .forward(9)
                 .build();
 
         Trajectory traj9 = drive.trajectoryBuilder(traj8.end())
@@ -161,7 +161,7 @@ public class Auto extends LinearOpMode {
         // Red
 
         Trajectory traj10 = drive.trajectoryBuilder(traj9.end())
-                .forward(26)
+                .forward(24)
                 .build();
         Trajectory traj11 = drive.trajectoryBuilder(traj10.end())
                 .strafeLeft(20)
@@ -243,7 +243,7 @@ public class Auto extends LinearOpMode {
             drive.followTrajectory(traj1);
             drive.followTrajectory(traj2);
             drive.followTrajectory(traj3);
-            drive.turn(Math.toRadians(-59));
+            drive.turn(Math.toRadians(-61));
             move(0.5, -1000, 800); // -1200 900 lift before and worked
             sleep(500);
             //move arms and lift
@@ -260,7 +260,7 @@ public class Auto extends LinearOpMode {
             //lift goes down
             move(0.5, 300, -750);
             //turn
-            drive.turn(Math.toRadians(202)); //200
+            drive.turn(Math.toRadians(202.5)); //200
 
 
             //drops lift and arm
@@ -269,25 +269,26 @@ public class Auto extends LinearOpMode {
             //moves forward
             drive.followTrajectory(traj6);
             //moves into arm
-            move(0.5, 400, 0);
+            move(0.5, 700, 0);
             claw.setPosition(0);
             sleep(250);
             // moves above arm
-            move(0.5, -750, 0);
+            move(0.5, -950, 0);
             //moves backward
             drive.followTrajectory(traj7);
             move(0.5, 0, 1200);
             sleep(350);
             //turns right
-            drive.turn(Math.toRadians(-182));
+            drive.turn(Math.toRadians(-192.5));
             //moves forward
             drive.followTrajectory(traj8);
             //release cone
             claw.setPosition(0.3);
             //moves back
             drive.followTrajectory(traj9);
+            //RED
             //turns
-            drive.turn(Math.toRadians(184));
+            drive.turn(Math.toRadians(198));
             claw.setPosition(0);
             move(0.5, 1000, -1200);
             sleep(350);
@@ -308,7 +309,7 @@ public class Auto extends LinearOpMode {
             drive.followTrajectory(traj1);
             drive.followTrajectory(traj2);
             drive.followTrajectory(traj3);
-            drive.turn(Math.toRadians(-59));
+            drive.turn(Math.toRadians(-61));
             move(0.5, -1000, 800); // -1200 900 lift before and worked
             sleep(500);
             //move arms and lift
@@ -325,7 +326,7 @@ public class Auto extends LinearOpMode {
             //lift goes down
             move(0.5, 300, -750);
             //turn
-            drive.turn(Math.toRadians(202)); //200
+            drive.turn(Math.toRadians(202.5)); //200
 
 
             //drops lift and arm
@@ -334,17 +335,17 @@ public class Auto extends LinearOpMode {
             //moves forward
             drive.followTrajectory(traj6);
             //moves into arm
-            move(0.5, 400, 0);
+            move(0.5, 700, 0);
             claw.setPosition(0);
             sleep(250);
             // moves above arm
-            move(0.5, -750, 0);
+            move(0.5, -950, 0);
             //moves backward
             drive.followTrajectory(traj7);
             move(0.5, 0, 1200);
             sleep(350);
             //turns right
-            drive.turn(Math.toRadians(-182));
+            drive.turn(Math.toRadians(-192.5));
             //moves forward
             drive.followTrajectory(traj8);
             //release cone
@@ -371,7 +372,7 @@ public class Auto extends LinearOpMode {
             drive.followTrajectory(traj1);
             drive.followTrajectory(traj2);
             drive.followTrajectory(traj3);
-            drive.turn(Math.toRadians(-59));
+            drive.turn(Math.toRadians(-61));
             move(0.5, -1000, 800); // -1200 900 lift before and worked
             sleep(500);
             //move arms and lift
@@ -388,7 +389,7 @@ public class Auto extends LinearOpMode {
             //lift goes down
             move(0.5, 300, -750);
             //turn
-            drive.turn(Math.toRadians(202)); //200
+            drive.turn(Math.toRadians(202.5)); //200
 
 
             //drops lift and arm
@@ -397,17 +398,17 @@ public class Auto extends LinearOpMode {
             //moves forward
             drive.followTrajectory(traj6);
             //moves into arm
-            move(0.5, 400, 0);
+            move(0.5, 700, 0);
             claw.setPosition(0);
             sleep(250);
             // moves above arm
-            move(0.5, -750, 0);
+            move(0.5, -950, 0);
             //moves backward
             drive.followTrajectory(traj7);
             move(0.5, 0, 1200);
             sleep(350);
             //turns right
-            drive.turn(Math.toRadians(-182));
+            drive.turn(Math.toRadians(-192.5));
             //moves forward
             drive.followTrajectory(traj8);
             //release cone
