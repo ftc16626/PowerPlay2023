@@ -364,7 +364,7 @@ public class Auto extends LinearOpMode {
 
         //GREEN
 
-        if (detector.getAvgGreen() > detector.getAvgRed() && detector.getAvgGreen() > detector.getAvgBlue())  {
+        else {
             drive.followTrajectory(traj0);
             move(0.5, -150, 0);
             claw.setPosition(0);

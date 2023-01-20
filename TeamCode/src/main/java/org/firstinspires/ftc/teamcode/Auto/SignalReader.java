@@ -14,6 +14,8 @@ public class SignalReader extends OpenCvPipeline {
 
     private int position = 3;
 
+    static private int leftYellow = 0;
+    static private int rightYellow = 0;
 
     public boolean left;
     public boolean right;
@@ -30,12 +32,19 @@ public class SignalReader extends OpenCvPipeline {
     static final Scalar BLUE = new Scalar(0, 0, 255);
     static final Scalar GREEN = new Scalar(0, 255, 0);
 
+    //triangulation scalar
+    static final Scalar YELLOW = new Scalar(0, 255, 0);
     /*
      * The core values which define the location and size of the sample regions
      */
     static final Point REGION_TOPLEFT_ANCHOR_POINT = new Point(230,90);
     static final int REGION_WIDTH = 50;
     static final int REGION_HEIGHT = 50;
+
+    //triangulation points (values are placeholders)
+    static final Point YELLOW_TOPLEFT_ANCHOR_POINT = new Point(leftYellow, rightYellow);
+    static final int YELLOW_WIDTH = 20;
+    static final int YELLOW_HEIGHT = 50;
 
     /*
      * Points which actually define the sample region rectangles, derived from above values
@@ -62,11 +71,22 @@ public class SignalReader extends OpenCvPipeline {
             REGION_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
             REGION_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
 
+    // Yellow box points
+    Point region_pointC = new Point(
+            YELLOW_TOPLEFT_ANCHOR_POINT.x,
+            YELLOW_TOPLEFT_ANCHOR_POINT.y);
+    Point region_pointD = new Point(
+            YELLOW_TOPLEFT_ANCHOR_POINT.x + YELLOW_WIDTH,
+            YELLOW_TOPLEFT_ANCHOR_POINT.y + YELLOW_HEIGHT);
+
+
     /*
      * Working variables
      */
     Mat region;
+    Mat region2;
     int avgRed, avgGreen, avgBlue;
+    int avgYellow;
 
     // Volatile since accessed by OpMode thread w/o synchronization
 
@@ -97,6 +117,7 @@ public class SignalReader extends OpenCvPipeline {
          * reverse also holds true.
          */
         region = firstFrame.submat(new Rect(region_pointA, region_pointB));
+        region2 = firstFrame.submat(new Rect(region_pointC, region_pointD));
     }
 
     @Override
@@ -227,4 +248,6 @@ public class SignalReader extends OpenCvPipeline {
     public int getAvgBlue(){
         return avgBlue;
     }
+
+    public int getAvgYellow() { return avgYellow;}
 }
