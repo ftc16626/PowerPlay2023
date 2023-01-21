@@ -14,6 +14,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -217,6 +218,7 @@ public class Auto extends LinearOpMode {
             telemetry.addData("Avg Blue in View", detector.getAvgBlue());
             telemetry.update();
         }
+
 
 
         //these set the position variables to 0 at the beginning
