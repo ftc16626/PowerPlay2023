@@ -14,6 +14,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
@@ -219,6 +220,7 @@ public class Auto extends LinearOpMode {
         }
 
 
+
         //these set the position variables to 0 at the beginning
         int leftPos = 0;
         int rightPos = 0;
@@ -364,7 +366,7 @@ public class Auto extends LinearOpMode {
 
         //GREEN
 
-        if (detector.getAvgGreen() > detector.getAvgRed() && detector.getAvgGreen() > detector.getAvgBlue())  {
+        else {
             drive.followTrajectory(traj0);
             move(0.5, -150, 0);
             claw.setPosition(0);

@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.PwmControl;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp (name = "RobotCentricSample")
@@ -61,6 +62,9 @@ public class RobotCentricSample extends LinearOpMode{
         int liftPositionTop = liftPositionBottom - 1650;
 
         arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        PwmControl pwmServo = (PwmControl) claw;
+        pwmServo.setPwmRange(PwmControl.PwmRange.defaultRange);
+
 
         waitForStart();
         if (isStopRequested()) return;
@@ -94,6 +98,7 @@ public class RobotCentricSample extends LinearOpMode{
 
             telemetry.addData("Arm Position", arm.getCurrentPosition());
             telemetry.addData("Lift Position", liftMotor1.getCurrentPosition());
+            telemetry.addData("Claw position",claw.getPosition());
             //IMU.getRobotYawPitchRollAngles();
             telemetry.update();
 
@@ -101,13 +106,12 @@ public class RobotCentricSample extends LinearOpMode{
             /* Denominator is the largest motor power (absolute value) or 1
              This ensures all the powers maintain the same ratio, but only when
              at least one is out of the range [-1, 1]*/
-
             //Driver 2
             if (gamepad2.x){
-                claw.setPosition(0); //close claw
+                claw.setPosition(claw.getPosition()-0.01); //close claw
             }
             else if (gamepad2.b){
-                claw.setPosition(.15); //open claw
+                claw.setPosition(claw.getPosition()+0.01); //open claw
             }
 
             int liftCurrentPosition = liftMotor1.getCurrentPosition();
