@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
-
+import org.firstinspires.ftc.teamcode.Auto.triangulationTesting;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.opencv.calib3d.Calib3d;
@@ -42,6 +42,9 @@ public class testAuto extends LinearOpMode {
     DcMotor liftMotor1 = null;
     DcMotor liftMotor2 = null;
 
+    public double centerX;
+    public double centerY;
+
     public Servo claw;
 
     //drivetrain variables (would have been used in drive method at the bottom)
@@ -63,10 +66,10 @@ public class testAuto extends LinearOpMode {
 
 
         // This has to do with the computer vision. The other file in this package called SignalReader is the camera configuration portion
-        SignalReader detector = new SignalReader(width);
+        triangulationTesting detector = new triangulationTesting(width);
         OpenCvCamera camera1;
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera1 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam1"), cameraMonitorViewId);
+        camera1 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam2"), cameraMonitorViewId);
         camera1.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -80,9 +83,9 @@ public class testAuto extends LinearOpMode {
         });
         camera1.setPipeline(detector);
 
-        OpenCvCamera camera2;
+        /*OpenCvCamera camera2;
         int cameraMonitorViewId1 = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId1", "id", hardwareMap.appContext.getPackageName());
-        camera2 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam2"), cameraMonitorViewId1);
+        camera2 = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "webcam1"), cameraMonitorViewId1);
         camera2.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -95,7 +98,7 @@ public class testAuto extends LinearOpMode {
             }
         });
         camera2.setPipeline(detector);
-
+         */
 
 
 
@@ -104,14 +107,6 @@ public class testAuto extends LinearOpMode {
         //camera.startStreaming(width, height, OpenCvCameraRotation.UPRIGHT);
         // These statements below show up on the driver station and detect the average amounts of RGB in the frame created in SignalReader
 
-        while (!isStarted()) {
-            telemetry.addData("Position from camera 1: (", + x1 + ", ", + y1 + ")");
-            telemetry.addData("Position from camera 2: (", + x2 + ", ", + y2 + ")");
-            telemetry.addData("3D Position of the object: ", objectPoints.toString());
-
-
-            telemetry.update();
-        }
 
 
         //these set the position variables to 0 at the beginning
@@ -124,7 +119,18 @@ public class testAuto extends LinearOpMode {
 
         //closes the claw on the preloaded cone before the autonomous is initialized
 
+
+        while (!isStarted()) {
+            telemetry.addData("CenterX", detector.getCenterX());
+            telemetry.addData("CenterY", detector.getCenterY());
+            telemetry.update();
+        }
+
         waitForStart();
+
+
+
+
 
         if (isStopRequested()) return;
 
