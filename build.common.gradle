@@ -52,6 +52,13 @@ android {
     }
 
     defaultConfig {
+
+        externalNativeBuild {
+            cmake {
+                cppFlags "-std=c++11"
+            }
+        }
+
         signingConfig signingConfigs.debug
         applicationId 'com.qualcomm.ftcrobotcontroller'
         minSdkVersion 23
@@ -117,6 +124,7 @@ android {
     sourceSets.main {
         jni.srcDirs = []
         jniLibs.srcDir rootProject.file('libs')
+        jniLibs.srcDirs = ['sdk/native/libs']
     }
     ndkVersion '21.3.6528147'
 }
