@@ -182,7 +182,7 @@ public class triangulationTesting extends OpenCvPipeline {
         }
          **/
 
-        RotatedRect rect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
+        RotatedRect rect = Imgproc.minAreaRect(new MatOfPoint2f(contours.toArray()));
         Point center = rect.center;
 
         // Iterate and check whether the bounding boxes
