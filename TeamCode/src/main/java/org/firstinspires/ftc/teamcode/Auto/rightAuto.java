@@ -32,7 +32,7 @@ public class rightAuto extends LinearOpMode {
 
     //RIGHT SIDE HIGH JUNCTION CALIBRATE
 
-    
+
     // position variables
     private int liftPos;
     private double bucketPos;
