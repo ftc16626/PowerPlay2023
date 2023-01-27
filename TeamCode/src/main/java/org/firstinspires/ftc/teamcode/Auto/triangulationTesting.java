@@ -46,6 +46,8 @@ public class triangulationTesting extends OpenCvPipeline {
 
 
 
+
+
     Point region_pointA = new Point(
             REGION_TOPLEFT_ANCHOR_POINT.x,
             REGION_TOPLEFT_ANCHOR_POINT.y);
@@ -53,7 +55,9 @@ public class triangulationTesting extends OpenCvPipeline {
             REGION_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
             REGION_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
 
-    Mat region = new Mat();
+
+
+    //Mat region = new Mat();
     public boolean maxContourT = false;
 
     public double centerX;
@@ -81,7 +85,7 @@ public class triangulationTesting extends OpenCvPipeline {
          * reverse also holds true.
          */
 
-        region = firstFrame.submat(new Rect(region_pointA, region_pointB));
+        //region = firstFrame.submat(new Rect(region_pointA, region_pointB));
         mat = firstFrame.submat(new Rect(region_pointA, region_pointB));
     }
 
@@ -146,7 +150,7 @@ public class triangulationTesting extends OpenCvPipeline {
         Point trial = new Point();
         trial.x = 200;
         trial.y = 200;
-        Imgproc.rectangle(input, region_pointA, region_pointB, BLUE, 2);
+        //Imgproc.rectangle(input, region_pointA, region_pointB, BLUE, 2);
         Imgproc.circle(input, trial , 1, new Scalar(0, 0, 255), 2);
 
         // We create a HSV range for yellow to detect regular stones
@@ -163,22 +167,27 @@ public class triangulationTesting extends OpenCvPipeline {
         // https://docs.opencv.org/3.4/da/d0c/tutorial_bounding_rects_circles.html
         // Oftentimes the edges are disconnected. findContours connects these edges.
 
-        MatOfPoint2f[] contoursPoly  = new MatOfPoint2f[contours.size()];
+        /**MatOfPoint2f[] contoursPoly  = new MatOfPoint2f[contours.size()];
         Rect[] boundRect = new Rect[contours.size()];
         for (int i = 0; i < contours.size(); i++) {
             contoursPoly[i] = new MatOfPoint2f();
             Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true);
             boundRect[i] = Imgproc.boundingRect(new MatOfPoint(contoursPoly[i].toArray()));
            // draw rectangle around boundaries
+            Point center = new Point(boundRect[i].x + boundRect[i].width/2, boundRect[i].y + boundRect[i].height/2);
+            centerX = boundRect[i].x + boundRect[i].width/2;
+            centerY = boundRect[i].y + boundRect[i].height/2;
+            Imgproc.circle(input, center, 4, new Scalar(0, 0, 255), 2);
             Imgproc.rectangle(mat, boundRect[i], new Scalar(0.5, 76.9, 89.8));
-
         }
+         **/
 
-
+        RotatedRect rect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
+        Point center = rect.center;
 
         // Iterate and check whether the bounding boxes
         // cover left and/or right side of the image
-        double maxArea = 0;
+        /*double maxArea = 0;
         MatOfPoint maxContour = null;
 
         for (MatOfPoint contour : contours) {
@@ -204,6 +213,8 @@ public class triangulationTesting extends OpenCvPipeline {
 
         }
 
+         */
+
 
         // return the mat with rectangles drawn
 
@@ -222,6 +233,8 @@ public class triangulationTesting extends OpenCvPipeline {
         // return thresh;
         // note that you must not do thresh.release() if you want to return thresh
         // you also need to release the input if you return thresh(release as much as possible)
+        //region = input.submat(new Rect(region_pointA, region_pointB));
+
         return input;
     }
 

@@ -21,7 +21,7 @@ public class testAuto {
         //you can input  a hardwareMap instead of linearOpMode if you want
         op = p_op;
         //initialize webcam
-        webcam = OpenCvCameraFactory.getInstance().createWebcam(op.hardwareMap.get(WebcamName.class, "webcam2"));
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(op.hardwareMap.get(WebcamName.class, "Webcam 1"));
     }
     public void observeStick(){
         //create the pipeline
