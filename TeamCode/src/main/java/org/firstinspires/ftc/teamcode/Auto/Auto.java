@@ -114,7 +114,7 @@ public class Auto extends LinearOpMode {
                 .build();
 
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .forward(43)
+                .forward(45)
                 .build();
 
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
@@ -196,7 +196,7 @@ public class Auto extends LinearOpMode {
         SignalReader detector = new SignalReader(width);
         OpenCvCamera camera;
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -236,7 +236,7 @@ public class Auto extends LinearOpMode {
 
 
         //RED
-        if (detector.getAvgRed() > detector.getAvgBlue() && detector.getAvgRed() > detector.getAvgGreen()) {
+        //if (detector.getAvgRed() > detector.getAvgBlue() && detector.getAvgRed() > detector.getAvgGreen()) {
             drive.followTrajectory(traj0);
             move(0.5, -150, 0);
             claw.setPosition(0);
@@ -250,7 +250,7 @@ public class Auto extends LinearOpMode {
             //moves forward to pole
             drive.followTrajectory(traj4);
             move(0.5, 300, 800);
-            claw.setPosition(0.3);
+            claw.setPosition(1.5);
 
             // raises up arm above pole
             move(0.5, -200, 0);
@@ -260,7 +260,7 @@ public class Auto extends LinearOpMode {
             //lift goes down
             move(0.5, 300, -750);
             //turn
-            drive.turn(Math.toRadians(202)); //200
+            /*drive.turn(Math.toRadians(202)); //200
 
 
             //drops lift and arm
@@ -287,7 +287,9 @@ public class Auto extends LinearOpMode {
             //moves back
             drive.followTrajectory(traj9);
             //turns
-            drive.turn(Math.toRadians(184));
+
+             */
+            drive.turn(Math.toRadians(198));
             claw.setPosition(0);
             move(0.5, 1000, -1200);
             sleep(350);
@@ -298,7 +300,7 @@ public class Auto extends LinearOpMode {
 
 
 
-        }
+        //}
 
         //BLUE
         if (detector.getAvgBlue() > detector.getAvgRed() && detector.getAvgBlue() > detector.getAvgGreen()) {
