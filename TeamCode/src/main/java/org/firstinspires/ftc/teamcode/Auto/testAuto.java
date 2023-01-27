@@ -15,12 +15,14 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 
-// VALUES ARE NOT REFLECTED YET
+
+@Autonomous (name="testAuto")
 
 
-@Autonomous (name="RightlowJunctionAuto")
+// THIS CODE SCORES A HIGH JUNCTION AND PARKS
 
-public class rightStrat2 extends LinearOpMode {
+
+public class testAuto extends LinearOpMode {
 
     // position variables
     private int liftPos;
@@ -106,17 +108,11 @@ public class rightStrat2 extends LinearOpMode {
                 .strafeLeft(34)
                 .build();
 
-
-        //forward to cone
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .forward(22)
+                .forward(45)
                 .build();
 
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
-                .forward(19)
-                .build();
-
-        Trajectory traj4 = drive.trajectoryBuilder(traj2.end())
                 .strafeRight(35)
                 .build();
 
@@ -131,40 +127,59 @@ public class rightStrat2 extends LinearOpMode {
          */
 
 
-        Trajectory traj5 = drive.trajectoryBuilder(traj4.end().plus(new Pose2d(0, 0, Math.toRadians(-70))))
+        Trajectory traj4 = drive.trajectoryBuilder(traj3.end().plus(new Pose2d(0, 0, Math.toRadians(-70))))
                 .forward(8)
                 .build();
 
+        Trajectory traj5 = drive.trajectoryBuilder(traj4.end())
+                .back(10)
+                .build();
+
         Trajectory traj6 = drive.trajectoryBuilder(traj5.end())
+                .forward(24)
+                .build();
+
+        Trajectory traj7 = drive.trajectoryBuilder(traj6.end())
+                .back(30)
+                .build();
+
+
+        Trajectory traj8 = drive.trajectoryBuilder(traj7.end())
+                .forward(10)
+                .build();
+
+        Trajectory traj9 = drive.trajectoryBuilder(traj8.end())
                 .back(10)
                 .build();
 
 
         // Red
 
-        Trajectory traj10 = drive.trajectoryBuilder(traj5.end())
-                .strafeLeft(26)
+        Trajectory traj10 = drive.trajectoryBuilder(traj9.end())
+                .forward(26)
                 .build();
         Trajectory traj11 = drive.trajectoryBuilder(traj10.end())
-                .back(20)
+                .strafeLeft(20)
                 .build();
 
 
-        // Green
+         // Green
 
-        Trajectory traj12 = drive.trajectoryBuilder(traj11.end())
+         Trajectory traj12 = drive.trajectoryBuilder(traj11.end())
                 .back(14)
                 .build();
 
-        // Blue
+         // Blue
 
-        Trajectory traj13 = drive.trajectoryBuilder(traj11.end())
-                .strafeRight(30)
-                .build();
+         Trajectory traj13 = drive.trajectoryBuilder(traj11.end())
+            .strafeRight(30)
+            .build();
 
-        Trajectory traj14 = drive.trajectoryBuilder(traj11.end())
-                .back(14)
-                .build();
+         Trajectory traj14 = drive.trajectoryBuilder(traj11.end())
+            .back(14)
+            .build();
+
+
 
 
         final int width = 320;
@@ -176,7 +191,7 @@ public class rightStrat2 extends LinearOpMode {
         SignalReader detector = new SignalReader(width);
         OpenCvCamera camera;
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -213,136 +228,139 @@ public class rightStrat2 extends LinearOpMode {
         waitForStart();
 
         if (isStopRequested()) return;
-            //forward
+
+
+        /*//RED 1
+        if (detector.getAvgRed() > detector.getAvgBlue() && detector.getAvgRed() > detector.getAvgGreen()) {
             drive.followTrajectory(traj0);
-            //lift arm and claw
             move(0.5, -150, 0);
             claw.setPosition(0);
-            //strafe left
             drive.followTrajectory(traj1);
-            //moves forward to low juction
             drive.followTrajectory(traj2);
-            move(0.5, -200, 500);
-            //turns towards cone stack
-            drive.turn(Math.toRadians(45));
-
-            //preloaded part
-            move(0.5, 1000, 0);
-            claw.setPosition(1.5);
-            move(0.5, -1200, 0);
-
-        //should pick up cone and score from cone stack
-            //make sure to tune values to cone height
-            //ASSIGNMENT: I forgot about the preloaded cone when making this, so fix this so that it scores the preloaded cone at the beginning and picks up the cone for the high junction at the end
-            claw.setPosition(0);
-            move(0.5, -950, 0);
-            claw.setPosition(1.5);
-            move(0.5, 950, 0);
-
-            claw.setPosition(1.5);
-            move(0.5, 200, 0);
-            claw.setPosition(0);
-            move(0.5, -950, 0);
-            claw.setPosition(1.5);
-            move(0.5, 950, 0);
-
-            claw.setPosition(1.5);
-            move(0.5, 200, 0);
-            claw.setPosition(0);
-            move(0.5, -950, 0);
-            claw.setPosition(1.5);
-            move(0.5, 950, 0);
-
-            claw.setPosition(1.5);
-            move(0.5, 200, 0);
-            claw.setPosition(0);
-            move(0.5, -950, 0);
-            claw.setPosition(1.5);
-            move(0.5, 950, 0);
-
-            claw.setPosition(1.5);
-            move(0.5, 200, 0);
-            claw.setPosition(0);
-            move(0.5, -400, 0);
-
-
-            //should have scored all low junction cones. Now go to high junction
-
-            drive.turn(Math.toRadians(-45));
-            //moves forward
             drive.followTrajectory(traj3);
-            /** ASSIGNMENT: go look at roadrunner and see if you can prevent the problem that arises here.
-            The problem here is that when the robot moves forward and strafes right, there is a lot of wheel slippage. There are 2 solutions for this:
-            Solution 1: the slippage gets accounted for because now the robot stops to score cones on the low junction and doesn't speed up as much. Test this pls:)
-            Solution 2: You can use a splining method from roadrunner and make the robot strafe right without stopping. This would account for the wheel slippage that happens during de-acceleration
-             */
-            //strafes right
-            drive.followTrajectory(traj4);
-
-            //Here is where you would call on the cameraCompute algorithm. It should get the contours of the high junction, calculate the centroid, and center the robot
-            // for now, lets just do it manually
             drive.turn(Math.toRadians(-59));
             move(0.5, -1000, 800); // -1200 900 lift before and worked
-            //moves forward towards pole
-            drive.followTrajectory(traj5);
+            sleep(500);
+            //move arms and lift
+            //moves forward to pole
+            drive.followTrajectory(traj4);
             move(0.5, 300, 800);
-            claw.setPosition(0.3);
+            claw.setPosition(1.5);
+
             // raises up arm above pole
             move(0.5, -200, 0);
             //move back
-            drive.followTrajectory(traj6);
-            //turns back so it is straight
-            drive.turn(Math.toRadians(59)); //200
-            //drops lift and arm
-            move(0.5, -100, -900);
+            drive.followTrajectory(traj5);
+
+            //lift goes down
+            move(0.5, 300, -750);
+
+            drive.turn(Math.toRadians(198));
+            claw.setPosition(0);
+            move(0.5, 1000, -1200);
+            sleep(350);
+            //RED PORTION
+            drive.followTrajectory(traj10);
+            drive.followTrajectory(traj11);
+        }
 
 
-            //fix parking after get the first part down
-            //RED
-            if (detector.getAvgRed() > detector.getAvgBlue() && detector.getAvgRed() > detector.getAvgGreen()) {
-                drive.followTrajectory(traj10);
-                drive.followTrajectory(traj11);
+        //GREEN 2
+
+        if (detector.getAvgGreen() > detector.getAvgRed() && detector.getAvgGreen() > detector.getAvgBlue())  {
+            drive.followTrajectory(traj0);
+            move(0.5, -150, 0);
+            claw.setPosition(0);
+            drive.followTrajectory(traj1);
+            drive.followTrajectory(traj2);
+            drive.followTrajectory(traj3);
+            drive.turn(Math.toRadians(-59));
+            move(0.5, -1000, 800); // -1200 900 lift before and worked
+            sleep(500);
+            //move arms and lift
+            //moves forward to pole
+            drive.followTrajectory(traj4);
+            move(0.5, 300, 800);
+            claw.setPosition(1.5);
+
+            // raises up arm above pole
+            move(0.5, -200, 0);
+            //move back
+            drive.followTrajectory(traj5);
+
+            //lift goes down
+            move(0.5, 300, -750);
+
+            drive.turn(Math.toRadians(198));
+            claw.setPosition(0);
+            move(0.5, 1000, -1200);
+            sleep(350);
+            // Green park
+            drive.followTrajectory(traj12);
+        }
 
 
-            }
 
-            //GREEN
-            if (detector.getAvgGreen() > detector.getAvgRed() && detector.getAvgGreen() > detector.getAvgBlue()) {
-                drive.followTrajectory(traj12);
+        //BLUE 3
+        if (detector.getAvgBlue() > detector.getAvgRed() && detector.getAvgBlue() > detector.getAvgGreen()) {
+            drive.followTrajectory(traj0);
+            move(0.5, -150, 0);
+            claw.setPosition(0);
+            drive.followTrajectory(traj1);
+            drive.followTrajectory(traj2);
+            drive.followTrajectory(traj3);
+            drive.turn(Math.toRadians(-59));
+            move(0.5, -1000, 800); // -1200 900 lift before and worked
+            sleep(500);
+            //move arms and lift
+            //moves forward to pole
+            drive.followTrajectory(traj4);
+            move(0.5, 300, 800);
+            claw.setPosition(1.5);
 
-            }
+            // raises up arm above pole
+            move(0.5, -200, 0);
+            //move back
+            drive.followTrajectory(traj5);
 
-            //BLUE
+            //lift goes down
+            move(0.5, 300, -750);
 
-            if (detector.getAvgBlue() > detector.getAvgRed() && detector.getAvgBlue() > detector.getAvgGreen()) {
-                drive.followTrajectory(traj13);
-                drive.followTrajectory(traj14);
-            }
+            drive.turn(Math.toRadians(198));
+            claw.setPosition(0);
+            move(0.5, 1000, -1200);
+            sleep(350);
+            // Blue Park
+            drive.followTrajectory(traj13);
+            drive.followTrajectory(traj14);
 
-        /** ASSIGNMENT:
-         * After all of this works, make a second autonomous that is for the other side of the field. All you do is reverse most of the properties to make a reflection
+        }
+
          */
+        sleep(1000000);
+
+
 
     }
 
 
-        //private void drive(int leftTarget, int rightTarget, double speed, int armTarget, int liftTarget){
-        // this is a custom method that updates the speed, the arm value, and the lift values during the autonomous (see above)
-        private void move ( double speed, int armTarget, int liftTarget){
+    //private void drive(int leftTarget, int rightTarget, double speed, int armTarget, int liftTarget){
+    // this is a custom method that updates the speed, the arm value, and the lift values during the autonomous (see above)
+    private void move(double speed, int armTarget, int liftTarget){
 
-            //leftPos += leftTarget;
-            //rightPos += rightTarget;
-            armPos += armTarget;
-            liftPos += liftTarget;
+        //leftPos += leftTarget;
+        //rightPos += rightTarget;
+        armPos += armTarget;
+        liftPos += liftTarget;
 
         /*leftFront.setTargetPosition(leftPos);
         leftBack.setTargetPosition(leftPos);
         rightFront.setTargetPosition(rightPos);
         rightBack.setTargetPosition(rightPos);
          */
-            arm.setTargetPosition(armPos);
-            liftMotor1.setTargetPosition(liftPos);
-            liftMotor2.setTargetPosition(liftPos);
+        arm.setTargetPosition(armPos);
+        liftMotor1.setTargetPosition(liftPos);
+        liftMotor2.setTargetPosition(liftPos);
 
 
 
@@ -352,21 +370,20 @@ public class rightStrat2 extends LinearOpMode {
         rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
          */
-            arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            //lift motors
-            liftMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //lift motors
+        liftMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         /*leftFront.setPower(speed);
         leftBack.setPower(speed);
         rightFront.setPower(speed);
         rightBack.setPower(speed);
          */
-            arm.setPower(speed);
-            liftMotor1.setPower(speed);
-            liftMotor2.setPower(speed);
-        }
+        arm.setPower(speed);
+        liftMotor1.setPower(speed);
+        liftMotor2.setPower(speed);
     }
-
+}
 
