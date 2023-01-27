@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunne
 import java.util.Arrays;
 
 
-@Autonomous (name="rightAuto")
+@Autonomous (name="rightHighJunctionAuto")
 
 public class rightAuto extends LinearOpMode {
 
