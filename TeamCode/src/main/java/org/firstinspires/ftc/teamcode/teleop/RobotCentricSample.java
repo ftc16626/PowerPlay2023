@@ -76,6 +76,13 @@ public class RobotCentricSample extends LinearOpMode{
             double backRightPower = (y + x - rx);
             double dtPowerFactor;
 
+            while (gamepad1.right_trigger == 1){
+                leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+                leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+                rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+                rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+            }
+
             if(gamepad1.left_bumper) dtPowerFactor = 0.3;
             else if(gamepad1.right_bumper) dtPowerFactor = -0.3;
             else dtPowerFactor = 1;
