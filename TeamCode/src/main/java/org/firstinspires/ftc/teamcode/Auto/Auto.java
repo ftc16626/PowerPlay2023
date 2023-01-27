@@ -196,7 +196,7 @@ public class Auto extends LinearOpMode {
         SignalReader detector = new SignalReader(width);
         OpenCvCamera camera;
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -236,7 +236,7 @@ public class Auto extends LinearOpMode {
 
 
         //RED
-        if (detector.getAvgRed() > detector.getAvgBlue() && detector.getAvgRed() > detector.getAvgGreen()) {
+        //if (detector.getAvgRed() > detector.getAvgBlue() && detector.getAvgRed() > detector.getAvgGreen()) {
             drive.followTrajectory(traj0);
             move(0.5, -150, 0);
             claw.setPosition(0);
@@ -298,7 +298,7 @@ public class Auto extends LinearOpMode {
 
 
 
-        }
+        //}
 
         //BLUE
         if (detector.getAvgBlue() > detector.getAvgRed() && detector.getAvgBlue() > detector.getAvgGreen()) {

@@ -127,7 +127,7 @@ public class cameraCompute extends LinearOpMode {
             moveRobot = detector.getCenterX() - perfectPointX;
 
             telemetry.addData("moveRobot", moveRobot);
-            telemetry.addData("Center", detector.getCenterX());
+            telemetry.addData("CenterX", detector.getCenterX());
             telemetry.update();
         }
 

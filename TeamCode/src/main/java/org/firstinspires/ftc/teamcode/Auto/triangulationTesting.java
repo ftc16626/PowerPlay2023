@@ -60,8 +60,8 @@ public class triangulationTesting extends OpenCvPipeline {
     //Mat region = new Mat();
     public boolean maxContourT = false;
 
-    public double centerX;
-    public double centerY;
+    public double centerX1;
+    public double centerY1;
     Mat mat = new Mat();
 
 
@@ -140,6 +140,8 @@ public class triangulationTesting extends OpenCvPipeline {
         //find contours, input scaledThresh because it has hard edges
         Imgproc.findContours(scaledThresh, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
+
+
         //list of frames to reduce inconsistency, not too many so that it is still real-time, change the number from 5 if you want
         if (frameList.size() > 5) {
             frameList.remove(0);
@@ -152,6 +154,13 @@ public class triangulationTesting extends OpenCvPipeline {
         trial.y = 200;
         //Imgproc.rectangle(input, region_pointA, region_pointB, BLUE, 2);
         Imgproc.circle(input, trial , 1, new Scalar(0, 0, 255), 2);
+
+        Moments moments = Imgproc.moments(thresh);
+        double centerX = moments.m10 / moments.m00;
+        double centerY = moments.m01 / moments.m00;
+        centerX1 = moments.m10 / moments.m00;
+        centerY1 = moments.m10 / moments.m00;
+
 
         // We create a HSV range for yellow to detect regular stones
         // NOTE: In OpenCV's implementation,
@@ -182,8 +191,9 @@ public class triangulationTesting extends OpenCvPipeline {
         }
          **/
 
-        RotatedRect rect = Imgproc.minAreaRect(new MatOfPoint2f(contours.toArray()));
+        /*RotatedRect rect = Imgproc.minAreaRect(new MatOfPoint2f(contours.toArray()));
         Point center = rect.center;
+         */
 
         // Iterate and check whether the bounding boxes
         // cover left and/or right side of the image
@@ -240,11 +250,11 @@ public class triangulationTesting extends OpenCvPipeline {
 
 
     public double getCenterX() {
-        return centerX;
+        return centerX1;
     }
 
     public double getCenterY() {
-        return centerY;
+        return centerY1;
     }
 
 }
