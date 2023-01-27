@@ -4,6 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.teamcode.Auto.triangulationTesting;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+import org.opencv.imgproc.Moments;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
@@ -54,7 +58,20 @@ public class testAuto {
                 webcam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
                 //if you are using dashboard, update dashboard camera view
                 /*FtcDashboard.getInstance().startCameraStream(webcam, 5);*/
+                /*Point center = new Point();
+                if (maxContour != null) {
+                    Moments moments = Imgproc.moments(maxContour);
+                    center.x = moments.get_m10() / moments.get_m00();
+                    center.y = moments.get_m01() / moments.get_m00();
+                    trial.x = moments.get_m10() / moments.get_m00();
+                    trial.y = moments.get_m01() / moments.get_m00();
+                    centerX = moments.get_m10() / moments.get_m00();
+                    centerY = moments.get_m01() / moments.get_m00();
+                    Imgproc.circle(input, center, 4, new Scalar(0, 0, 255), 2);
 
+                }
+
+                 */
             }
 
             @Override
