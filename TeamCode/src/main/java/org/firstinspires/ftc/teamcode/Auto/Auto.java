@@ -181,7 +181,7 @@ public class Auto extends LinearOpMode {
          // Blue
 
          Trajectory traj13 = drive.trajectoryBuilder(traj11.end())
-            .strafeRight(30)
+            .strafeRight(38)
             .build();
 
          Trajectory traj14 = drive.trajectoryBuilder(traj11.end())
@@ -254,10 +254,11 @@ public class Auto extends LinearOpMode {
             //moves forward to pole
             drive.followTrajectory(traj4);
             move(0.5, 300, 800);
+            sleep(1000);
             claw.setPosition(1.5);
 
             // raises up arm above pole
-            move(0.5, -200, 0);
+            move(0.5, -600, 0);
             //move back
             drive.followTrajectory(traj5);
 
@@ -271,6 +272,7 @@ public class Auto extends LinearOpMode {
             //RED PORTION
             drive.followTrajectory(traj10);
             drive.followTrajectory(traj11);
+            sleep(10000000);
         }
 
 
@@ -290,22 +292,25 @@ public class Auto extends LinearOpMode {
             //moves forward to pole
             drive.followTrajectory(traj4);
             move(0.5, 300, 800);
+            sleep(1000);
             claw.setPosition(1.5);
 
             // raises up arm above pole
-            move(0.5, -200, 0);
+            move(0.5, -600, 0);
             //move back
             drive.followTrajectory(traj5);
 
             //lift goes down
             move(0.5, 300, -750);
 
-            drive.turn(Math.toRadians(198));
+            drive.turn(Math.toRadians(59));
             claw.setPosition(0);
             move(0.5, 1000, -1200);
             sleep(350);
             // Green park
             drive.followTrajectory(traj12);
+            sleep(10000000);
+
         }
 
 
@@ -325,23 +330,27 @@ public class Auto extends LinearOpMode {
             //moves forward to pole
             drive.followTrajectory(traj4);
             move(0.5, 300, 800);
+            sleep(1000);
             claw.setPosition(1.5);
 
             // raises up arm above pole
-            move(0.5, -200, 0);
+            move(0.5, -600, 0);
             //move back
             drive.followTrajectory(traj5);
 
             //lift goes down
             move(0.5, 300, -750);
 
-            drive.turn(Math.toRadians(198));
+            drive.turn(Math.toRadians(68));
             claw.setPosition(0);
             move(0.5, 1000, -1200);
             sleep(350);
+
             // Blue Park
             drive.followTrajectory(traj13);
             drive.followTrajectory(traj14);
+            sleep(10000000);
+
 
         }
 

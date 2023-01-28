@@ -107,7 +107,7 @@ public class strat2Auto extends LinearOpMode {
 
         //forward to cone
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .forward(22)
+                .forward(35)
                 .build();
 
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
@@ -174,7 +174,7 @@ public class strat2Auto extends LinearOpMode {
         SignalReader detector = new SignalReader(width);
         OpenCvCamera camera;
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -212,6 +212,7 @@ public class strat2Auto extends LinearOpMode {
 
         if (isStopRequested()) return;
             //forward
+
             drive.followTrajectory(traj0);
             //lift arm and claw
             move(0.5, -150, 0);
@@ -222,17 +223,22 @@ public class strat2Auto extends LinearOpMode {
             drive.followTrajectory(traj2);
             move(0.5, -200, 500);
             //turns towards cone stack
-            drive.turn(Math.toRadians(45));
+            drive.turn(Math.toRadians(-145));
             //should pick up cone and score from cone stack
             //make sure to tune values to cone height
             //ASSIGNMENT: I forgot about the preloaded cone when making this, so fix this so that it scores the preloaded cone at the beginning and picks up the cone for the high junction at the end
-            claw.setPosition(1.5);
+            claw.setPosition(1.2);
+            sleep(1000);
             move(0.5, 200, 0);
             claw.setPosition(0);
+            sleep(1000);
             move(0.5, -950, 0);
+            sleep(1000);
             claw.setPosition(1.5);
             move(0.5, 950, 0);
+            sleep(1000);
 
+/*
             claw.setPosition(1.5);
             move(0.5, 200, 0);
             claw.setPosition(0);
@@ -272,11 +278,11 @@ public class strat2Auto extends LinearOpMode {
             Solution 2: You can use a splining method from roadrunner and make the robot strafe right without stopping. This would account for the wheel slippage that happens during de-acceleration
              */
             //strafes right
-            drive.followTrajectory(traj4);
+            //drive.followTrajectory(traj4);
 
             //Here is where you would call on the cameraCompute algorithm. It should get the contours of the high junction, calculate the centroid, and center the robot
             // for now, lets just do it manually
-            drive.turn(Math.toRadians(-59));
+            /*drive.turn(Math.toRadians(-59));
             move(0.5, -1000, 800); // -1200 900 lift before and worked
             //moves forward towards pole
             drive.followTrajectory(traj5);
@@ -290,6 +296,8 @@ public class strat2Auto extends LinearOpMode {
             drive.turn(Math.toRadians(59)); //200
             //drops lift and arm
             move(0.5, -100, -900);
+
+             */
 
 
             //fix parking after get the first part down
