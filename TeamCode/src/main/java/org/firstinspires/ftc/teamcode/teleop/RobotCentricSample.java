@@ -1,10 +1,18 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
+import android.os.Environment;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+
 
 @TeleOp (name = "RobotCentricSample")
 public class RobotCentricSample extends LinearOpMode{
@@ -29,6 +37,7 @@ public class RobotCentricSample extends LinearOpMode{
     @Override
     public void runOpMode() throws InterruptedException {
 
+        boolean notAccessed = false, notPrinted=false;
 
         // Declare our motors
         // Make sure your ID's match your configuration
@@ -139,6 +148,58 @@ public class RobotCentricSample extends LinearOpMode{
                 liftMotor1.setPower(gamepad2.right_stick_y * liftPowerFactor);
                 liftMotor2.setPower(gamepad2.right_stick_y * liftPowerFactor);
             }
+
+            String logFilePath = String.format("%s/FIRST/data/myLog.txt", Environment.getExternalStorageDirectory().getAbsolutePath());
+            FileWriter writer = null;
+
+            try {
+                File logFile = new File(logFilePath);
+                writer = new FileWriter(logFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+                notAccessed=true;
+            }
+
+            waitForStart();
+            while(opModeIsActive()) {
+                telemetry.addData("Log File", logFilePath);
+                if(notAccessed)
+                    telemetry.addLine("failed to access document");
+                if(notPrinted)
+                    telemetry.addLine("failed to write to document");
+                telemetry.addData("Voltage", hardwareMap.voltageSensor.iterator().next().getVoltage());
+                telemetry.addData("Front Left Motor Power", leftFront.getPower());
+                telemetry.addData("Back Left Motor Power", leftBack.getPower());
+                telemetry.addData("Front Right Motor Power", rightFront.getPower());
+                telemetry.addData("Back Right Motor Power", rightBack.getPower());
+                telemetry.addLine("\n");
+                telemetry.addData("Front Left Power Setting", frontLeftPower);
+                telemetry.addData("Back Left Power Setting", backLeftPower);
+                telemetry.addData("Front Right Power Setting", frontRightPower);
+                telemetry.addData("Back Right Power Setting", backRightPower);
+                telemetry.update();
+
+                String loggedText = "Control Hub Voltage: " + Double.toString(hardwareMap.voltageSensor.iterator().next().getVoltage()) + "\n";
+
+                try {
+                    writer.write("loggedText");
+                    writer.write("Front Left Motor Power: " + Double.toString(leftFront.getPower()) + "\n");
+                    writer.write("Back Left Motor Power: " + Double.toString(leftBack.getPower()) + "\n");
+                    writer.write("Front Right Motor Power: " + Double.toString(rightFront.getPower()) + "\n");
+                    writer.write("Back Right Motor Power: " + Double.toString(rightBack.getPower()) + "\n");
+                }catch(IOException e){
+                    e.printStackTrace();
+                    notPrinted=true;
+                }
+            }
+
+            try {
+                writer.close();
+            }catch(IOException e){
+                e.printStackTrace();
+                notPrinted=true;
+            }
+
 
 
 

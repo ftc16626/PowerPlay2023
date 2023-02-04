@@ -62,7 +62,8 @@ public class triangulationTesting extends OpenCvPipeline {
 
     public double centerX;
     public double centerY;
-    Mat mat = new Mat();
+    Mat matSub = new Mat();
+    List<MatOfPoint> contours = new ArrayList<>();
 
 
     @Override
@@ -86,7 +87,7 @@ public class triangulationTesting extends OpenCvPipeline {
          */
 
         //region = firstFrame.submat(new Rect(region_pointA, region_pointB));
-        mat = firstFrame.submat(new Rect(region_pointA, region_pointB));
+        matSub = firstFrame.submat(new Rect(region_pointA, region_pointB));
     }
 
     public Mat processFrame(Mat input) {
@@ -135,7 +136,7 @@ public class triangulationTesting extends OpenCvPipeline {
         Imgproc.Canny(scaledThresh, edges, 100, 200);
 
         //contours, apply post processing to information
-        List<MatOfPoint> contours = new ArrayList<>();
+        contours.clear();
         Mat hierarchy = new Mat();
         //find contours, input scaledThresh because it has hard edges
         Imgproc.findContours(scaledThresh, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
@@ -182,8 +183,9 @@ public class triangulationTesting extends OpenCvPipeline {
         }
          **/
 
-        RotatedRect rect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
-        Point center = rect.center;
+        //I don't exactly know what this was meant to do but it caused an error, so I commented it out - Aiden
+//        RotatedRect rect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
+//        Point center = rect.center;
 
         // Iterate and check whether the bounding boxes
         // cover left and/or right side of the image
