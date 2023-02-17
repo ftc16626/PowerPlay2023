@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.Auto;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -115,6 +116,9 @@ public class testVision extends LinearOpMode {
 
         waitForStart();
 
+
+
+
         calculation = true;
 
         if (isStopRequested()) {
@@ -128,6 +132,17 @@ public class testVision extends LinearOpMode {
 
             telemetry.addData("moveRobot", moveRobot);
             telemetry.addData("Center", detector.getCenterX());
+            telemetry.addData("mat:", detector.getmat());
+
+
+//            for(MatOfPoint contour : detector.getContours()){
+//                telemetry.addData("get contourx:", contour.col(0)[0]);
+//                telemetry.addData("get contoury:", contour.row(0));
+//                contour.col(0);
+//                contour.row(0);
+//            }
+            //telemetry.addData("contours value x", detector.getContours().get(0).col(0));
+
             telemetry.update();
         }
 

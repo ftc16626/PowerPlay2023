@@ -62,7 +62,6 @@ public class triangulationTesting extends OpenCvPipeline {
 
     public double centerX;
     public double centerY;
-    Mat mat = new Mat();
 
 
     @Override
@@ -88,9 +87,13 @@ public class triangulationTesting extends OpenCvPipeline {
         //region = firstFrame.submat(new Rect(region_pointA, region_pointB));
         mat = firstFrame.submat(new Rect(region_pointA, region_pointB));
     }
+    List<MatOfPoint> contours = new ArrayList<>();
+    Mat hierarchy = new Mat();
+    Mat scaledThresh = new Mat();
+    Mat mat = new Mat();
 
+    @Override
     public Mat processFrame(Mat input) {
-        Mat mat = new Mat();
 
         //mat turns into HSV value
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
@@ -119,7 +122,6 @@ public class triangulationTesting extends OpenCvPipeline {
         masked.convertTo(scaledMask, -1, 150 / average.val[1], 0);
 
 
-        Mat scaledThresh = new Mat();
         //you probably want to tune this
         Scalar strictLowHSV = new Scalar(0, strictLowS, 0); //strict lower bound HSV for yellow
         Scalar strictHighHSV = new Scalar(255, strictHighS, 255); //strict higher bound HSV for yellow
@@ -135,8 +137,6 @@ public class triangulationTesting extends OpenCvPipeline {
         Imgproc.Canny(scaledThresh, edges, 100, 200);
 
         //contours, apply post processing to information
-        List<MatOfPoint> contours = new ArrayList<>();
-        Mat hierarchy = new Mat();
         //find contours, input scaledThresh because it has hard edges
         Imgproc.findContours(scaledThresh, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
@@ -182,8 +182,8 @@ public class triangulationTesting extends OpenCvPipeline {
         }
          **/
 
-        RotatedRect rect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
-        Point center = rect.center;
+        //RotatedRect rect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
+        //Point center = rect.center;
 
         // Iterate and check whether the bounding boxes
         // cover left and/or right side of the image
@@ -220,14 +220,18 @@ public class triangulationTesting extends OpenCvPipeline {
 
         //release all the data
         input.release();
-        scaledThresh.copyTo(input);
-        scaledThresh.release();
+        //scaledThresh.copyTo(input);
+        //scaledThresh.release();
         scaledMask.release();
-        mat.release();
+        //mat.release();
         masked.release();
         edges.release();
         thresh.release();
         finalMask.release();
+//        for(MatOfPoint contour : contours){
+//            contour.release();
+//        }
+        //contours.release();
         //change the return to whatever mat you want
         //for example, if I want to look at the lenient thresh:
         // return thresh;
@@ -239,6 +243,20 @@ public class triangulationTesting extends OpenCvPipeline {
     }
 
 
+    public Mat getmat(){
+        return mat;
+    }
+    public Mat getThresh(){
+        return scaledThresh;
+    }
+
+    public Mat getHierarchy(){
+        return hierarchy;
+    }
+
+    public List<MatOfPoint> getContours(){
+        return contours;
+    }
     public double getCenterX() {
         return centerX;
     }
