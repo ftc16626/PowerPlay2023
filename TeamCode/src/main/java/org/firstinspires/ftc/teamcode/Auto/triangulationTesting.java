@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Auto;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
@@ -8,6 +10,7 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.RotatedRect;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.imgproc.Moments;
 import org.openftc.easyopencv.OpenCvPipeline;
@@ -24,6 +27,13 @@ public class triangulationTesting extends OpenCvPipeline {
     //these are public static to be tuned in dashboard
     public static double strictLowS = 140;
     public static double strictHighS = 255;
+    public Mat inputChecker = new Mat();
+    Mat hierarchy = new Mat();
+    //contours, apply post processing to masked image information
+    List<MatOfPoint> contours = new ArrayList<>();
+    Rect biggestRect = new Rect();
+    Point center = new Point();
+    Mat colorTester = new Mat();
 
     private int width;
 
@@ -62,7 +72,7 @@ public class triangulationTesting extends OpenCvPipeline {
 
     public double centerX;
     public double centerY;
-    Mat mat = new Mat();
+    //Mat mat = new Mat();
 
 
     @Override
@@ -86,12 +96,13 @@ public class triangulationTesting extends OpenCvPipeline {
          */
 
         //region = firstFrame.submat(new Rect(region_pointA, region_pointB));
-        mat = firstFrame.submat(new Rect(region_pointA, region_pointB));
+        //mat = firstFrame.submat(new Rect(region_pointA, region_pointB));
     }
 
     public Mat processFrame(Mat input) {
+        //hierarchy.release();
         Mat mat = new Mat();
-
+        inputChecker = input;
         //mat turns into HSV value
         Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
         if (mat.empty()) {
@@ -134,12 +145,12 @@ public class triangulationTesting extends OpenCvPipeline {
         //detect edges(only useful for showing result)(you can delete)
         Imgproc.Canny(scaledThresh, edges, 100, 200);
 
-        //contours, apply post processing to information
-        List<MatOfPoint> contours = new ArrayList<>();
-        Mat hierarchy = new Mat();
         //find contours, input scaledThresh because it has hard edges
+        contours.clear();
         Imgproc.findContours(scaledThresh, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.drawContours(hierarchy, contours, -1, BLUE, 3);
 
+        //Rect[] boundRect = new Rect[contours.size()];
         //list of frames to reduce inconsistency, not too many so that it is still real-time, change the number from 5 if you want
         if (frameList.size() > 5) {
             frameList.remove(0);
@@ -167,23 +178,28 @@ public class triangulationTesting extends OpenCvPipeline {
         // https://docs.opencv.org/3.4/da/d0c/tutorial_bounding_rects_circles.html
         // Oftentimes the edges are disconnected. findContours connects these edges.
 
-        /**MatOfPoint2f[] contoursPoly  = new MatOfPoint2f[contours.size()];
+        MatOfPoint2f[] contoursPoly  = new MatOfPoint2f[contours.size()];
         Rect[] boundRect = new Rect[contours.size()];
         for (int i = 0; i < contours.size(); i++) {
             contoursPoly[i] = new MatOfPoint2f();
-            Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true);
+            Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true); //convert raw contours into polygons
             boundRect[i] = Imgproc.boundingRect(new MatOfPoint(contoursPoly[i].toArray()));
-           // draw rectangle around boundaries
-            Point center = new Point(boundRect[i].x + boundRect[i].width/2, boundRect[i].y + boundRect[i].height/2);
-            centerX = boundRect[i].x + boundRect[i].width/2;
-            centerY = boundRect[i].y + boundRect[i].height/2;
-            Imgproc.circle(input, center, 4, new Scalar(0, 0, 255), 2);
-            Imgproc.rectangle(mat, boundRect[i], new Scalar(0.5, 76.9, 89.8));
-        }
-         **/
 
-        RotatedRect rect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
-        Point center = rect.center;
+            colorTester.release();
+            colorTester = scaledThresh.submat(boundRect[i]);
+
+           // draw rectangle around boundaries
+            Point boundCenter = new Point(boundRect[i].x + boundRect[i].width/2, boundRect[i].y + boundRect[i].height/2);
+            Imgproc.circle(scaledThresh, boundCenter, 4, new Scalar(0, 0, 255), 2);
+            Imgproc.rectangle(scaledThresh, boundRect[i], new Scalar(0.5, 76.9, 89.8));
+        }
+
+        center.x = biggestRect.x + biggestRect.width/2;
+        center.y = biggestRect.y + biggestRect.height/2;
+        Imgproc.circle(scaledThresh, center, 4, new Scalar(0, 0, 255), 5);
+
+//        RotatedRect rect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
+//        Point center = rect.center;
 
         // Iterate and check whether the bounding boxes
         // cover left and/or right side of the image
@@ -243,8 +259,27 @@ public class triangulationTesting extends OpenCvPipeline {
         return centerX;
     }
 
+    public Mat getInputChecker() {
+        return inputChecker;
+    }
+
+    public Mat getHierarchy(){
+        return hierarchy;
+    }
+
+    public List<MatOfPoint> getContours(){
+        return contours;
+    }
+
     public double getCenterY() {
         return centerY;
     }
 
+    public Point getCenter(){
+        return center;
+    }
+
+    public Mat getColorTester() {
+        return colorTester;
+    }
 }

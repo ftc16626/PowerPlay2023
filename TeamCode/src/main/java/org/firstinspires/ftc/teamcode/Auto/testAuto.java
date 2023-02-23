@@ -17,11 +17,12 @@ public class testAuto {
     private OpenCvWebcam webcam;
     private triangulationTesting opencv = null;
     private LinearOpMode op;
-    public testAuto(LinearOpMode p_op){
+    public testAuto(LinearOpMode p_op,triangulationTesting detector){
         //you can input  a hardwareMap instead of linearOpMode if you want
         op = p_op;
         //initialize webcam
         webcam = OpenCvCameraFactory.getInstance().createWebcam(op.hardwareMap.get(WebcamName.class, "Webcam 1"));
+        opencv = detector;
     }
     public void observeStick(){
         //create the pipeline
@@ -29,8 +30,6 @@ public class testAuto {
         final int width = 320;
         final int height = 240;
         boolean test = false;
-
-        opencv = new triangulationTesting(width);
 
         webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
         {

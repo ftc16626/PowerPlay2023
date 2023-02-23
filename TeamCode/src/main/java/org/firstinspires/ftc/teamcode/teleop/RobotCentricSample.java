@@ -100,7 +100,7 @@ public class RobotCentricSample extends LinearOpMode{
                 claw.setPosition(0); //close claw
             }
             else if (gamepad2.b){
-                claw.setPosition(.15); //open claw
+                claw.setPosition(.225); //open claw
             }
 
             int liftCurrentPosition = liftMotor1.getCurrentPosition();
@@ -134,10 +134,17 @@ public class RobotCentricSample extends LinearOpMode{
                 double liftPowerFactor;
                 if(gamepad2.right_stick_y>0) liftPowerFactor = 0.64;
                 else liftPowerFactor = 0.8;
+                float liftPowerMax = 0.9f;
 
                 telemetry.addData("gamepad 2 right stick y", gamepad2.right_stick_y);
-                liftMotor1.setPower(gamepad2.right_stick_y * liftPowerFactor);
-                liftMotor2.setPower(gamepad2.right_stick_y * liftPowerFactor);
+                if(gamepad2.right_stick_y * liftPowerFactor <= liftPowerMax) {
+                    liftMotor1.setPower(gamepad2.right_stick_y * liftPowerFactor);
+                    liftMotor2.setPower(gamepad2.right_stick_y * liftPowerFactor);
+                }
+                else{
+                    liftMotor1.setPower(liftPowerMax);
+                    liftMotor2.setPower(liftPowerMax);
+                }
             }
 
 
