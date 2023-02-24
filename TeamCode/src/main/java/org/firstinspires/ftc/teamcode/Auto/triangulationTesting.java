@@ -19,6 +19,8 @@ import java.util.List;
 /*@Config*/
 public class triangulationTesting extends OpenCvPipeline {
 
+
+    ;
     //backlog of frames to average out to reduce noise
     ArrayList<double[]> frameList;
     //these are public static to be tuned in dashboard
@@ -64,6 +66,15 @@ public class triangulationTesting extends OpenCvPipeline {
     public double centerY1;
     Mat mat = new Mat();
 
+    Mat region_1_Cb = new Mat();
+    Mat YCrCb = new Mat();
+    Mat Cb = new Mat();
+
+    void inputToCb(Mat input)
+    {
+        Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
+        Core.extractChannel(YCrCb, Cb, 2);
+    }
 
     @Override
 
@@ -86,14 +97,17 @@ public class triangulationTesting extends OpenCvPipeline {
          */
 
         //region = firstFrame.submat(new Rect(region_pointA, region_pointB));
-        mat = firstFrame.submat(new Rect(region_pointA, region_pointB));
+        inputToCb(firstFrame);
+
+        region_1_Cb = firstFrame.submat(new Rect(region_pointA, region_pointB));
     }
 
     public Mat processFrame(Mat input) {
-        Mat mat = new Mat();
+
+        //Mat mat = new Mat(input.rows(), input.cols(), input.type());
 
         //mat turns into HSV value
-        Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
+        Imgproc.cvtColor(input, Cb, Imgproc.COLOR_RGB2HSV);
         if (mat.empty()) {
             return input;
         }
@@ -102,15 +116,15 @@ public class triangulationTesting extends OpenCvPipeline {
         Scalar lowHSV = new Scalar(20, 70, 80); // lenient lower bound HSV for yellow
         Scalar highHSV = new Scalar(32, 255, 255); // lenient higher bound HSV for yellow
 
-        Mat thresh = new Mat();
+        Mat thresh = new Mat(input.rows(), input.cols(), input.type(), new Scalar(0));
 
         // Get a black and white image of yellow objects
-        Core.inRange(mat, lowHSV, highHSV, thresh);
+        Core.inRange(Cb, lowHSV, highHSV, thresh);
 
         Mat masked = new Mat();
         //color the white portion of thresh in with HSV from mat
         //output into masked
-        Core.bitwise_and(mat, mat, masked, thresh);
+        Core.bitwise_and(Cb, Cb, masked, thresh);
         //calculate average HSV values of the white thresh values
         Scalar average = Core.mean(masked, thresh);
 
@@ -128,7 +142,7 @@ public class triangulationTesting extends OpenCvPipeline {
 
         Mat finalMask = new Mat();
         //color in scaledThresh with HSV, output into finalMask(only useful for showing result)(you can delete)
-        Core.bitwise_and(mat, mat, finalMask, scaledThresh);
+        Core.bitwise_and(Cb, Cb, finalMask, scaledThresh);
 
         Mat edges = new Mat();
         //detect edges(only useful for showing result)(you can delete)
@@ -139,7 +153,7 @@ public class triangulationTesting extends OpenCvPipeline {
         Mat hierarchy = new Mat();
         //find contours, input scaledThresh because it has hard edges
         Imgproc.findContours(scaledThresh, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-
+        Imgproc.drawContours(scaledThresh, contours, Imgproc.RETR_TREE, BLUE, Imgproc.CHAIN_APPROX_SIMPLE);
 
 
         //list of frames to reduce inconsistency, not too many so that it is still real-time, change the number from 5 if you want

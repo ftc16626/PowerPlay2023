@@ -4,12 +4,17 @@ package org.firstinspires.ftc.teamcode.Auto;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.opencv.core.Point;
 
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvWebcam;
 
 
 @Autonomous(name = "cameraCompute")
@@ -56,7 +61,9 @@ public class cameraCompute extends LinearOpMode {
     public double rightDistance = 0;
     public double moveRobot = 0;
 
-
+    OpenCvWebcam webcam;
+    blockedVision.BlockedVisionPipeline pipeline;
+    blockedVision.BlockedVisionPipeline.junctionPosition snapshotAnalysis = blockedVision.BlockedVisionPipeline.junctionPosition.LEFT; // default
 
     triangulationTesting detector = new triangulationTesting(width);
 
@@ -107,20 +114,62 @@ public class cameraCompute extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
 
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
+        pipeline = new blockedVision.BlockedVisionPipeline();
+        webcam.setPipeline(pipeline);
 
-//        initialize camera and pipeline
-        testAuto cv = new testAuto(this);
-//      call the function to startStreaming
-        cv.observeStick();
+        webcam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+        {
+            @Override
+            public void onOpened()
+            {
+                webcam.startStreaming(320,240, OpenCvCameraRotation.UPRIGHT);
+            }
 
-        waitForStart();
 
+            @Override
+            public void onError(int errorCode) {}
+        });
+
+        while (!isStarted() && !isStopRequested())
+        {
+            telemetry.addData("Realtime analysis", pipeline.getAnalysis());
+            telemetry.update();
+
+            // Don't burn CPU cycles busy-looping in this sample
+            sleep(50);
+        }
         calculation = true;
 
-        if (isStopRequested()) {
-            cv.stopCamera();
-            return;
+        snapshotAnalysis = pipeline.getAnalysis();
+
+        /*
+         * Show that snapshot on the telemetry
+         */
+        telemetry.addData("Snapshot post-START analysis", snapshotAnalysis);
+        telemetry.update();
+
+        switch (snapshotAnalysis)
+        {
+            case LEFT:
+            {
+                /* Your autonomous code */
+                break;
+            }
+
+            case RIGHT:
+            {
+                /* Your autonomous code */
+                break;
+            }
+
+            case CENTER:
+            {
+                sleep(1000);
+            }
         }
+
         if(calculation = true){
             rightJunction = 320 - detector.getCenterX();
             rightDistance = 320 - perfectPointX;
