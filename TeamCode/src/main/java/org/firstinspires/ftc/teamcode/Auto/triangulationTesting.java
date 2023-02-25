@@ -32,8 +32,11 @@ public class triangulationTesting extends OpenCvPipeline {
     //contours, apply post processing to masked image information
     List<MatOfPoint> contours = new ArrayList<>();
     Rect biggestRect = new Rect();
-    Point center = new Point();
-    Mat colorTester = new Mat();
+    Point center = new Point(0,0);
+    Mat colorTester = new Mat(0,0,0);
+    Mat scaledThreshTester = new Mat();
+    boolean nonZeroColorTesterValue = false;
+    boolean biggestRectEmpty = true;
 
     private int width;
 
@@ -178,6 +181,8 @@ public class triangulationTesting extends OpenCvPipeline {
         // https://docs.opencv.org/3.4/da/d0c/tutorial_bounding_rects_circles.html
         // Oftentimes the edges are disconnected. findContours connects these edges.
 
+        biggestRect.height = 0;
+        biggestRect.width = 0;
         MatOfPoint2f[] contoursPoly  = new MatOfPoint2f[contours.size()];
         Rect[] boundRect = new Rect[contours.size()];
         for (int i = 0; i < contours.size(); i++) {
@@ -185,18 +190,38 @@ public class triangulationTesting extends OpenCvPipeline {
             Imgproc.approxPolyDP(new MatOfPoint2f(contours.get(i).toArray()), contoursPoly[i], 3, true); //convert raw contours into polygons
             boundRect[i] = Imgproc.boundingRect(new MatOfPoint(contoursPoly[i].toArray()));
 
-            colorTester.release();
+            //determine whether the current contour is black or white (doesn't work yet)
+            //white contours are the ones that we want to check
             colorTester = scaledThresh.submat(boundRect[i]);
+            int colorTesterSize = colorTester.width() * colorTester.height();
+            if(colorTesterSize>0){
+                float value = (float) colorTester.get(0, 0)[0];
+                if(value > 0){
+                    //this is a white pixel, so this contour is white and could represent a junction
+                    nonZeroColorTesterValue = true;
+                    if(biggestRect.empty()){
+                        biggestRect = boundRect[i];
+                    }
+                    else if(boundRect[i].width*boundRect[i].height>biggestRect.width*biggestRect.height){
+                        biggestRect = boundRect[i];
+                    }
+                }
+            }
 
            // draw rectangle around boundaries
             Point boundCenter = new Point(boundRect[i].x + boundRect[i].width/2, boundRect[i].y + boundRect[i].height/2);
             Imgproc.circle(scaledThresh, boundCenter, 4, new Scalar(0, 0, 255), 2);
             Imgproc.rectangle(scaledThresh, boundRect[i], new Scalar(0.5, 76.9, 89.8));
         }
-
-        center.x = biggestRect.x + biggestRect.width/2;
-        center.y = biggestRect.y + biggestRect.height/2;
+        if(!biggestRect.empty()) {
+            center.x = biggestRect.x + biggestRect.width / 2;
+            center.y = biggestRect.y + biggestRect.height / 2;
+            biggestRectEmpty = false;
+        }
+        else biggestRectEmpty = true;
+        //center isn't moving for some reason
         Imgproc.circle(scaledThresh, center, 4, new Scalar(0, 0, 255), 5);
+        scaledThreshTester = scaledThresh;
 
 //        RotatedRect rect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
 //        Point center = rect.center;
@@ -281,5 +306,17 @@ public class triangulationTesting extends OpenCvPipeline {
 
     public Mat getColorTester() {
         return colorTester;
+    }
+
+    public boolean getNonZeroColorTesterValue(){
+        return nonZeroColorTesterValue;
+    }
+
+    public Mat getScaledThreshTester(){
+        return scaledThreshTester;
+    }
+
+    public boolean getBiggestRectEmpty(){
+        return biggestRectEmpty;
     }
 }

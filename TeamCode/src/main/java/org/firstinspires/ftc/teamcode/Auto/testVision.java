@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.opencv.core.Mat;
 import org.opencv.core.Point;
 
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -192,8 +193,12 @@ public class testVision extends LinearOpMode {
             telemetry.addData("hierarchy matrix size", detector.getHierarchy().size());
             telemetry.addData("contours list size", detector.getContours().size());
             telemetry.addData("junction center viewport coordinates", detector.getCenter());
-            for(int i=0;i<detector.getColorTester().cols();i++) {
-                telemetry.addData("color tester element", detector.getColorTester().col(i).row(0));
+            telemetry.addData("nonzero color tester value",detector.getNonZeroColorTesterValue());
+            telemetry.addData("biggest rect empty", detector.getBiggestRectEmpty());
+
+            if(!detector.getColorTester().empty()){
+                Mat colorTester = detector.getColorTester();
+                telemetry.addData("color tester value",colorTester.get(0,0)[0]);
             }
             telemetry.update();
         }
