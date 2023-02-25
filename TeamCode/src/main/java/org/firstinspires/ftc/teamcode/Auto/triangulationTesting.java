@@ -219,7 +219,7 @@ public class triangulationTesting extends OpenCvPipeline {
             biggestRectEmpty = false;
         }
         else biggestRectEmpty = true;
-        //center isn't moving for some reason
+        //center represents the center of the largest region of yellow; this represents the junction in most cases
         Imgproc.circle(scaledThresh, center, 4, new Scalar(0, 0, 255), 5);
         scaledThreshTester = scaledThresh;
 
