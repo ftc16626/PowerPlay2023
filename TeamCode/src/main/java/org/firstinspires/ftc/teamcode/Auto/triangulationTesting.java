@@ -37,6 +37,9 @@ public class triangulationTesting extends OpenCvPipeline {
     Mat scaledThreshTester = new Mat();
     boolean nonZeroColorTesterValue = false;
     boolean biggestRectEmpty = true;
+    //These coordinates may need tweaking, but it's where we want the junction to be in the viewport for placing a cone
+    final Point junctionTargetPos = new Point(160,120);
+    boolean junctionOnTarget = false;
 
     private int width;
 
@@ -221,6 +224,8 @@ public class triangulationTesting extends OpenCvPipeline {
         else biggestRectEmpty = true;
         //center represents the center of the largest region of yellow; this represents the junction in most cases
         Imgproc.circle(scaledThresh, center, 4, new Scalar(0, 0, 255), 5);
+        if(center==junctionTargetPos) junctionOnTarget = true;
+        else junctionOnTarget = false;
         scaledThreshTester = scaledThresh;
 
 //        RotatedRect rect = Imgproc.minAreaRect(new MatOfPoint2f(contour.toArray()));
@@ -308,7 +313,7 @@ public class triangulationTesting extends OpenCvPipeline {
         return colorTester;
     }
 
-    public boolean getNonZeroColorTesterValue(){
+    public boolean isNonZeroColorTesterValue(){
         return nonZeroColorTesterValue;
     }
 
@@ -316,7 +321,11 @@ public class triangulationTesting extends OpenCvPipeline {
         return scaledThreshTester;
     }
 
-    public boolean getBiggestRectEmpty(){
+    public boolean isBiggestRectEmpty(){
         return biggestRectEmpty;
+    }
+
+    public boolean isJunctionOnTarget(){
+        return junctionOnTarget;
     }
 }

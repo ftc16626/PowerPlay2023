@@ -105,11 +105,14 @@ public class testVision extends LinearOpMode {
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
         arm.setDirection(DcMotorSimple.Direction.REVERSE);
+        arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         liftMotor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor2.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //one of the lift motors is reversed so that the lift can move up and down
         liftMotor1.setDirection(DcMotorSimple.Direction.REVERSE);
+        liftMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         //this calls the sample mecanum drive from roadrunner (check the drive package to the left)
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -176,6 +179,13 @@ public class testVision extends LinearOpMode {
 
         waitForStart();
 
+        arm.setTargetPosition(2000);
+        liftMotor1.setTargetPosition(-575);
+        liftMotor2.setTargetPosition(-575);
+        arm.setPower(0.5);
+        liftMotor1.setPower(0.5);
+        liftMotor2.setPower(0.5);
+
         calculation = true;
 
         if (isStopRequested()) {
@@ -193,13 +203,9 @@ public class testVision extends LinearOpMode {
             telemetry.addData("hierarchy matrix size", detector.getHierarchy().size());
             telemetry.addData("contours list size", detector.getContours().size());
             telemetry.addData("junction center viewport coordinates", detector.getCenter());
-            telemetry.addData("nonzero color tester value",detector.getNonZeroColorTesterValue());
-            telemetry.addData("biggest rect empty", detector.getBiggestRectEmpty());
-
-            if(!detector.getColorTester().empty()){
-                Mat colorTester = detector.getColorTester();
-                telemetry.addData("color tester value",colorTester.get(0,0)[0]);
-            }
+            telemetry.addData("nonzero color tester value",detector.isNonZeroColorTesterValue());
+            telemetry.addData("biggest rect empty", detector.isBiggestRectEmpty());
+            telemetry.addData("junction on target",detector.isJunctionOnTarget());
             telemetry.update();
         }
 
