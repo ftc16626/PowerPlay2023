@@ -95,56 +95,39 @@ public class RobotCentricSample extends LinearOpMode{
              This ensures all the powers maintain the same ratio, but only when
              at least one is out of the range [-1, 1]*/
 
+            double clawOpenPosition = 0.25;
+
             //Driver 2
             if (gamepad2.x){
                 claw.setPosition(0); //close claw
             }
             else if (gamepad2.b){
-                claw.setPosition(.225); //open claw
+                claw.setPosition(clawOpenPosition); //open claw
             }
 
             int liftCurrentPosition = liftMotor1.getCurrentPosition();
             int armCurrentPosition = arm.getCurrentPosition();
 
-            //buttons for positioning the claw to pick up a cone
-            if(gamepad2.y || gamepad2.a){
-                //Open the claw.
-                claw.setPosition(.15);
+            arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            arm.setPower(-gamepad2.left_stick_y);
 
-                //Set the arm to the proper position
-                if(gamepad2.y)arm.setTargetPosition(armPickupPosFront);
-                else arm.setTargetPosition(armPickupPosBack);
-                arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                arm.setPower(armPower);
+            liftMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-                //Make lift move to the target position.
-                liftMotor1.setTargetPosition(liftPickupPos);
-                liftMotor2.setTargetPosition(liftPickupPos);
-                liftMotor1.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                liftMotor2.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            //Lift-power factor needs to be less when the lift is moving downward because gravity also pulls the lift downward.
+            double liftPowerFactor;
+            if(gamepad2.right_stick_y>0) liftPowerFactor = 0.64;
+            else liftPowerFactor = 0.8;
+            float liftPowerMax = 0.9f;
+
+            telemetry.addData("gamepad 2 right stick y", gamepad2.right_stick_y);
+            if(gamepad2.right_stick_y * liftPowerFactor <= liftPowerMax) {
+                liftMotor1.setPower(gamepad2.right_stick_y * liftPowerFactor);
+                liftMotor2.setPower(gamepad2.right_stick_y * liftPowerFactor);
             }
             else{
-                arm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                arm.setPower(-gamepad2.left_stick_y);
-
-                liftMotor1.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                liftMotor2.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-                //Lift-power factor needs to be less when the lift is moving downward because gravity also pulls the lift downward.
-                double liftPowerFactor;
-                if(gamepad2.right_stick_y>0) liftPowerFactor = 0.64;
-                else liftPowerFactor = 0.8;
-                float liftPowerMax = 0.9f;
-
-                telemetry.addData("gamepad 2 right stick y", gamepad2.right_stick_y);
-                if(gamepad2.right_stick_y * liftPowerFactor <= liftPowerMax) {
-                    liftMotor1.setPower(gamepad2.right_stick_y * liftPowerFactor);
-                    liftMotor2.setPower(gamepad2.right_stick_y * liftPowerFactor);
-                }
-                else{
-                    liftMotor1.setPower(liftPowerMax);
-                    liftMotor2.setPower(liftPowerMax);
-                }
+                liftMotor1.setPower(liftPowerMax);
+                liftMotor2.setPower(liftPowerMax);
             }
 
 

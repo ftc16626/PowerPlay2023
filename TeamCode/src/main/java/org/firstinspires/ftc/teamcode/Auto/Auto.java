@@ -25,12 +25,12 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunne
 import java.util.Arrays;
 
 
-@Autonomous (name="Autonomous")
+@Autonomous (name="leftAuto")
 
 public class Auto extends LinearOpMode {
 
     // position variables
-    private int liftPos;
+    private int liftPos = 0;
     private double bucketPos;
     private double distanceToHub;
     private double bucketDumpPos;
@@ -51,7 +51,7 @@ public class Auto extends LinearOpMode {
     int rightPos;
 
     //arm variable
-    int armPos;
+    int armPos = 0;
 
 
     @Override
@@ -110,27 +110,16 @@ public class Auto extends LinearOpMode {
                 .build();
 
         Trajectory traj1 = drive.trajectoryBuilder(traj0.end())
-                .strafeLeft(34)
+                .strafeLeft(37)
                 .build();
 
         Trajectory traj2 = drive.trajectoryBuilder(traj1.end())
-                .forward(43)
+                .forward(45)
                 .build();
 
         Trajectory traj3 = drive.trajectoryBuilder(traj2.end())
                 .strafeRight(35)
                 .build();
-
-        /*Trajectory traj5 = drive.trajectoryBuilder(traj3.end())
-                .strafeRight(0)
-                .addDisplacementMarker(() -> {
-                    // This marker runs after the first splineTo()
-                    move(0.5, -1200, 700);
-                    // Run your action in here!
-                })
-                .build();
-         */
-
 
         Trajectory traj4 = drive.trajectoryBuilder(traj3.end().plus(new Pose2d(0, 0, Math.toRadians(-70))))
                 .forward(8)
@@ -161,26 +150,23 @@ public class Auto extends LinearOpMode {
         // Red
 
         Trajectory traj10 = drive.trajectoryBuilder(traj9.end())
-                .forward(26)
-                .build();
-        Trajectory traj11 = drive.trajectoryBuilder(traj10.end())
-                .strafeLeft(20)
+                .strafeLeft(35)
                 .build();
 
 
          // Green
 
-         Trajectory traj12 = drive.trajectoryBuilder(traj11.end())
+         Trajectory traj12 = drive.trajectoryBuilder(traj10.end())
                 .back(14)
                 .build();
 
          // Blue
 
-         Trajectory traj13 = drive.trajectoryBuilder(traj11.end())
-            .strafeRight(30)
+         Trajectory traj13 = drive.trajectoryBuilder(traj10.end())
+            .strafeRight(40)
             .build();
 
-         Trajectory traj14 = drive.trajectoryBuilder(traj11.end())
+         Trajectory traj14 = drive.trajectoryBuilder(traj10.end())
             .back(14)
             .build();
 
@@ -196,7 +182,7 @@ public class Auto extends LinearOpMode {
         SignalReader detector = new SignalReader(width);
         OpenCvCamera camera;
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam"), cameraMonitorViewId);
+        camera = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -237,63 +223,30 @@ public class Auto extends LinearOpMode {
 
         //RED
         if (detector.getAvgRed() > detector.getAvgBlue() && detector.getAvgRed() > detector.getAvgGreen()) {
-            drive.followTrajectory(traj0);
-            move(0.5, -150, 0);
-            claw.setPosition(0);
-            drive.followTrajectory(traj1);
-            drive.followTrajectory(traj2);
-            drive.followTrajectory(traj3);
-            drive.turn(Math.toRadians(-59));
+            drive.followTrajectory(traj0); //drive forward a bit to avoid friction with the wall
+            move(0.5, -150, 0); //raise the arm to avoid friction with the floor
+            claw.setPosition(0); //grab the pre-loaded cone
+            drive.followTrajectory(traj1); //drive left to find a clear path toward the high junction
+            drive.followTrajectory(traj2); //drive forward toward the high junction
+            drive.followTrajectory(traj3); //drive right toward the high junction
+            drive.turn(Math.toRadians(-59)); //turn the claw toward the high junction
             move(0.5, -1000, 800); // -1200 900 lift before and worked
             sleep(500);
             //move arms and lift
-            //moves forward to pole
-            drive.followTrajectory(traj4);
-            move(0.5, 300, 800);
-            claw.setPosition(0.3);
+            drive.followTrajectory(traj4); //moves forward to pole
+            move(0.5, 300, 800); //lower cone onto pole
+            claw.setPosition(0.3); //release cone
 
-            // raises up arm above pole
-            move(0.5, -200, 0);
-            //move back
-            drive.followTrajectory(traj5);
+            move(0.5, -200, 0); // raises up arm above pole
+            drive.followTrajectory(traj5); //move back
 
-            //lift goes down
-            move(0.5, 300, -750);
-            //turn
-            drive.turn(Math.toRadians(202)); //200
-
-
-            //drops lift and arm
-            move(0.5, -100, -900);
-            sleep(500);
-            //moves forward
-            drive.followTrajectory(traj6);
-            //moves into arm
-            move(0.5, 400, 0);
-            claw.setPosition(0);
-            sleep(250);
-            // moves above arm
-            move(0.5, -750, 0);
-            //moves backward
-            drive.followTrajectory(traj7);
-            move(0.5, 0, 1200);
+            drive.turn(Math.toRadians(60)); //turns
+            claw.setPosition(0); //closes claw
+            move(0.5, 1050, -1200); //lower arm and lift to starting positions
             sleep(350);
-            //turns right
-            drive.turn(Math.toRadians(-182));
-            //moves forward
-            drive.followTrajectory(traj8);
-            //release cone
-            claw.setPosition(0.3);
-            //moves back
-            drive.followTrajectory(traj9);
-            //turns
-            drive.turn(Math.toRadians(184));
-            claw.setPosition(0);
-            move(0.5, 1000, -1200);
-            sleep(350);
-            //RED PORTION
+
+            //RED PARK
             drive.followTrajectory(traj10);
-            drive.followTrajectory(traj11);
 
 
 
@@ -301,7 +254,7 @@ public class Auto extends LinearOpMode {
         }
 
         //BLUE
-        if (detector.getAvgBlue() > detector.getAvgRed() && detector.getAvgBlue() > detector.getAvgGreen()) {
+        else if (detector.getAvgBlue() > detector.getAvgRed() && detector.getAvgBlue() > detector.getAvgGreen()) {
             drive.followTrajectory(traj0);
             move(0.5, -150, 0);
             claw.setPosition(0);
@@ -323,38 +276,12 @@ public class Auto extends LinearOpMode {
             drive.followTrajectory(traj5);
 
             //lift goes down
-            move(0.5, 300, -750);
-            //turn
-            drive.turn(Math.toRadians(202)); //200
+            move(0.5, 0, -750);
 
-
-            //drops lift and arm
-            move(0.5, -100, -900);
-            sleep(500);
-            //moves forward
-            drive.followTrajectory(traj6);
-            //moves into arm
-            move(0.5, 400, 0);
-            claw.setPosition(0);
-            sleep(250);
-            // moves above arm
-            move(0.5, -750, 0);
-            //moves backward
-            drive.followTrajectory(traj7);
-            move(0.5, 0, 1200);
-            sleep(350);
-            //turns right
-            drive.turn(Math.toRadians(-182));
-            //moves forward
-            drive.followTrajectory(traj8);
-            //release cone
-            claw.setPosition(0.3);
-            //moves back
-            drive.followTrajectory(traj9);
             //turns
             drive.turn(Math.toRadians(60));
             claw.setPosition(0);
-            move(0.5, 1000, -1200);
+            move(0.5, 1050, -1200);
             // Blue Park
             drive.followTrajectory(traj13);
             drive.followTrajectory(traj14);
@@ -364,7 +291,7 @@ public class Auto extends LinearOpMode {
 
         //GREEN
 
-        if (detector.getAvgGreen() > detector.getAvgRed() && detector.getAvgGreen() > detector.getAvgBlue())  {
+        else if (detector.getAvgGreen() > detector.getAvgRed() && detector.getAvgGreen() > detector.getAvgBlue())  {
             drive.followTrajectory(traj0);
             move(0.5, -150, 0);
             claw.setPosition(0);
@@ -385,39 +312,10 @@ public class Auto extends LinearOpMode {
             //move back
             drive.followTrajectory(traj5);
 
-            //lift goes down
-            move(0.5, 300, -750);
-            //turn
-            drive.turn(Math.toRadians(202)); //200
-
-
-            //drops lift and arm
-            move(0.5, -100, -900);
-            sleep(500);
-            //moves forward
-            drive.followTrajectory(traj6);
-            //moves into arm
-            move(0.5, 400, 0);
-            claw.setPosition(0);
-            sleep(250);
-            // moves above arm
-            move(0.5, -750, 0);
-            //moves backward
-            drive.followTrajectory(traj7);
-            move(0.5, 0, 1200);
-            sleep(350);
-            //turns right
-            drive.turn(Math.toRadians(-182));
-            //moves forward
-            drive.followTrajectory(traj8);
-            //release cone
-            claw.setPosition(0.3);
-            //moves back
-            drive.followTrajectory(traj9);
             //turns
             drive.turn(Math.toRadians(60));
             claw.setPosition(0);
-            move(0.5, 1000, -1200);
+            move(0.5, 1050, -1200);
             // Green park
             drive.followTrajectory(traj12);
         }
